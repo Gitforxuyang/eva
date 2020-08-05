@@ -4,6 +4,8 @@ import (
 	"context"
 	"github.com/Gitforxuyang/eva/client/selector"
 	"github.com/Gitforxuyang/eva/proto"
+	"github.com/Gitforxuyang/eva/wrapper/log"
+	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/balancer/roundrobin"
 	"google.golang.org/grpc/keepalive"
@@ -35,11 +37,13 @@ func GetGRpcSayHelloServiceClient() GRpcSayHelloServiceClient {
 				Timeout:             time.Second * 1,
 				PermitWithoutStream: true,
 			}),
+		grpc.WithChainUnaryInterceptor(log.NewClientWrapper()),
 	)
 	c := &grpcSayHelloServiceClient{}
 	c.client = hello.NewSayHelloServiceClient(conn)
 	if err != nil {
 		panic(err)
 	}
+	logrus.SetFormatter(&logrus.JSONFormatter{})
 	return c
 }

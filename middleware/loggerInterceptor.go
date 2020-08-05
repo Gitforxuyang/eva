@@ -13,14 +13,14 @@ func Logger() func(ctx context.Context, req interface{}, info *grpc.UnaryServerI
 }
 
 func logger(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-	start := time.Now().Unix()
+	start := time.Now()
 	defer func() {
 		logrus.WithFields(logrus.Fields{
 			"req":     req,
 			"resp":    resp,
 			"method":  info.FullMethod,
-			"useTime": fmt.Sprintf("%d s", time.Now().Unix()-start),
-		}).Info("msg")
+			"useTime": fmt.Sprintf("%s", time.Now().Sub(start).String()),
+		}).Info("收到的请求")
 	}()
 	return handler(ctx, req)
 }
