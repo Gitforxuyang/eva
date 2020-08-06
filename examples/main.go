@@ -24,9 +24,9 @@ func main() {
 	tracer, err := trace2.NewTracer("eva_local", "http://192.168.3.23:14268/api/traces")
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
-			catch.NewServerWrapper(),
 			trace.NewGRpcServerWrapper(tracer),
 			log.NewServerWrapper(),
+			catch.NewServerWrapper(),
 		)),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle: time.Second * 50,

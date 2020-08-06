@@ -6,8 +6,12 @@ import (
 	"google.golang.org/grpc/status"
 )
 
-const (
-	UNKNOW_ERROR = 1001
+var (
+	UnknowError = EvaError{
+		Code:    1001,
+		Message: "未知错误",
+		Status:  codes.Unknown,
+	}
 )
 
 type EvaError struct {
@@ -18,6 +22,10 @@ type EvaError struct {
 	Status  codes.Code //grpc的错误码
 }
 
+func (m EvaError) SetDetail(detail string) EvaError {
+	m.Detail = detail
+	return m
+}
 func (e *EvaError) Error() string {
 	b, _ := json.Marshal(e)
 	return string(b)
@@ -37,10 +45,8 @@ func Parse(err string) *EvaError {
 	e := new(EvaError)
 	errr := json.Unmarshal([]byte(err), e)
 	if errr != nil {
-		e.Detail = err
-		e.Code = UNKNOW_ERROR
-		e.Message = "未知错误"
-		e.Status = codes.Unknown
+		a := UnknowError.SetDetail(err)
+		return &a
 	}
 	return e
 }

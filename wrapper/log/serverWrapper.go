@@ -3,6 +3,7 @@ package log
 import (
 	"context"
 	"fmt"
+	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
 	"github.com/Gitforxuyang/eva/util/utils"
 	"google.golang.org/grpc"
@@ -19,7 +20,7 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 				"resp":    utils.StructToMap(resp),
 				"method":  info.FullMethod,
 				"useTime": fmt.Sprintf("%s", time.Now().Sub(start).String()),
-				"err":     utils.StructToMap(err),
+				"err":     utils.StructToMap(error2.DecodeStatus(err)),
 			})
 		}()
 		resp, err = handler(ctx, req)

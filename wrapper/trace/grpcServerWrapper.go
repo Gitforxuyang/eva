@@ -2,6 +2,7 @@ package trace
 
 import (
 	"context"
+	"fmt"
 	"github.com/Gitforxuyang/eva/util/logger"
 	"github.com/Gitforxuyang/eva/util/trace"
 	"github.com/Gitforxuyang/eva/util/utils"
@@ -16,12 +17,9 @@ func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req in
 		if err != nil {
 			logger.GetLogger().Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
 		}
-		//s, ok := span.Context().(jaeger.SpanContext)
-		//if ok {
-		//	ctx = context.WithValue(ctx, "traceId", s.TraceID().String())
-		//}
 		defer span.Finish()
 		resp, err = handler(ctx, req)
+		fmt.Println("trace")
 		span.LogFields(
 			log.Object("req", utils.StructToJson(req)),
 			log.Object("resp", utils.StructToJson(resp)),

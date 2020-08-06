@@ -2,16 +2,20 @@ package catch
 
 import (
 	"context"
-	"fmt"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 	"google.golang.org/grpc"
+	"time"
 )
 
 //用来将其它服务的返回错误转换为eva定义的错规范
 func NewClientWrapper() func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+		deadline, _ := ctx.Deadline()
+		//如果超时5s在deadline之后，则重置deadline为5s后
+		if time.Now().Add(time.Second * 5).After(deadline) {
+			ctx, _ = context.WithTimeout(ctx, time.Second*5)
+		}
 		err := invoker(ctx, method, req, reply, cc, opts...)
-		fmt.Println("catch")
 		if err != nil {
 			e := error2.DecodeStatus(err)
 			err = e

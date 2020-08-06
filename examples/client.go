@@ -5,13 +5,14 @@ import (
 	client2 "github.com/Gitforxuyang/eva/client"
 	hello "github.com/Gitforxuyang/eva/examples/proto"
 	"github.com/Gitforxuyang/eva/util/logger"
+	"github.com/Gitforxuyang/eva/util/trace"
 	"strconv"
 	"time"
 )
 
 func main() {
 	logger.Init("demo client")
+	trace.Init("eva_local", "http://192.168.3.23:14268/api/trace")
 	client := client2.GetGRpcSayHelloServiceClient()
 	client.Hello(context.TODO(), &hello.String{Name: strconv.Itoa(int(time.Now().Unix()))})
-	time.Sleep(time.Second * 3)
 }
