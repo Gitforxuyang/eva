@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	hello "github.com/Gitforxuyang/eva/proto"
+	hello "github.com/Gitforxuyang/eva/examples/proto"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 	"google.golang.org/grpc/codes"
 )

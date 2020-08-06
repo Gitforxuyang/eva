@@ -14,6 +14,26 @@ type Tracer struct {
 	closer io.Closer
 }
 
+var (
+	tracer *Tracer
+)
+
+func GetTracer() *Tracer {
+	if tracer == nil {
+		panic("tracer不存在")
+	}
+	return tracer
+
+}
+
+func Init(serviceName string, addr string) {
+	t, err := NewTracer(serviceName, addr)
+	if err != nil {
+		panic(err)
+	}
+	tracer = t
+}
+
 func NewTracer(serviceName string, addr string) (*Tracer, error) {
 	cfg := config.Configuration{
 		ServiceName: serviceName,

@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/Gitforxuyang/eva/proto"
-	"github.com/Gitforxuyang/eva/service"
+	hello "github.com/Gitforxuyang/eva/examples/proto"
+	"github.com/Gitforxuyang/eva/examples/service"
 	"github.com/Gitforxuyang/eva/util/logger"
 	trace2 "github.com/Gitforxuyang/eva/util/trace"
 	"github.com/Gitforxuyang/eva/wrapper/catch"
@@ -25,8 +25,8 @@ func main() {
 	grpcServer := grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			catch.NewServerWrapper(),
+			trace.NewGRpcServerWrapper(tracer),
 			log.NewServerWrapper(),
-			trace.NewGrpcServerWrapper(tracer),
 		)),
 		grpc.KeepaliveParams(keepalive.ServerParameters{
 			MaxConnectionIdle: time.Second * 50,

@@ -2,6 +2,7 @@ package catch
 
 import (
 	"context"
+	"fmt"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 	"google.golang.org/grpc"
 )
@@ -10,6 +11,7 @@ import (
 func NewClientWrapper() func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
 		err := invoker(ctx, method, req, reply, cc, opts...)
+		fmt.Println("catch")
 		if err != nil {
 			e := error2.DecodeStatus(err)
 			err = e

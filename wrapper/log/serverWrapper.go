@@ -14,7 +14,6 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		start := time.Now()
 		defer func() {
-
 			log.Info(ctx, "收到的请求", logger.Fields{
 				"req":     utils.StructToMap(req),
 				"resp":    utils.StructToMap(resp),
@@ -23,6 +22,7 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 				"err":     utils.StructToMap(err),
 			})
 		}()
-		return handler(ctx, req)
+		resp, err = handler(ctx, req)
+		return resp, err
 	}
 }

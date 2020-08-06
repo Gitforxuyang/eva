@@ -24,7 +24,7 @@ func NewClientWrapper() func(ctx context.Context, method string, req, reply inte
 			})
 		}()
 		err = invoker(ctx, method, req, reply, cc, opts...)
-
+		fmt.Println("log")
 		return err
 	}
 }

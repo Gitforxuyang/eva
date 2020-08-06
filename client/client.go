@@ -3,10 +3,11 @@ package client
 import (
 	"context"
 	"github.com/Gitforxuyang/eva/client/selector"
-	"github.com/Gitforxuyang/eva/proto"
+	hello "github.com/Gitforxuyang/eva/examples/proto"
+	trace2 "github.com/Gitforxuyang/eva/util/trace"
 	"github.com/Gitforxuyang/eva/wrapper/catch"
 	"github.com/Gitforxuyang/eva/wrapper/log"
-	"github.com/sirupsen/logrus"
+	"github.com/Gitforxuyang/eva/wrapper/trace"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/balancer/roundrobin"
 	"google.golang.org/grpc/keepalive"
@@ -27,6 +28,7 @@ func (m *grpcSayHelloServiceClient) Hello(ctx context.Context, req *hello.String
 }
 
 func GetGRpcSayHelloServiceClient() GRpcSayHelloServiceClient {
+	tracer := trace2.GetTracer()
 	conn, err := grpc.Dial(":50001",
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
@@ -39,6 +41,7 @@ func GetGRpcSayHelloServiceClient() GRpcSayHelloServiceClient {
 				PermitWithoutStream: true,
 			}),
 		grpc.WithChainUnaryInterceptor(
+			trace.NewClientWrapper(tracer),
 			log.NewClientWrapper(),
 			catch.NewClientWrapper(),
 		),
@@ -48,6 +51,5 @@ func GetGRpcSayHelloServiceClient() GRpcSayHelloServiceClient {
 	if err != nil {
 		panic(err)
 	}
-	logrus.SetFormatter(&logrus.JSONFormatter{})
 	return c
 }

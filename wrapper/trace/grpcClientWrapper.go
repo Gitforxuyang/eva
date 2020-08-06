@@ -10,21 +10,17 @@ import (
 	"google.golang.org/grpc"
 )
 
-func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-		ctx, span, err := tracer.StartGRpcServerSpanFromContext(ctx, info.FullMethod)
+func NewClientWrapper(tracer *trace.Tracer) func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+	return func(ctx context.Context, method string, req, reply interface{}, cc *grpc.ClientConn, invoker grpc.UnaryInvoker, opts ...grpc.CallOption) error {
+		ctx, span, err := tracer.StartGRpcClientSpanFromContext(ctx, method)
 		if err != nil {
 			logger.GetLogger().Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
 		}
-		//s, ok := span.Context().(jaeger.SpanContext)
-		//if ok {
-		//	ctx = context.WithValue(ctx, "traceId", s.TraceID().String())
-		//}
 		defer span.Finish()
-		resp, err = handler(ctx, req)
+		err = invoker(ctx, method, req, reply, cc, opts...)
 		span.LogFields(
 			log.Object("req", utils.StructToJson(req)),
-			log.Object("resp", utils.StructToJson(resp)),
+			log.Object("resp", utils.StructToJson(reply)),
 		)
 		if err != nil {
 			ext.Error.Set(span, true)
@@ -33,6 +29,6 @@ func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req in
 				log.Object("evaError", utils.StructToJson(err)),
 			)
 		}
-		return resp, err
+		return err
 	}
 }
