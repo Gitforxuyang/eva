@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/Gitforxuyang/eva/client/selector"
 	"github.com/Gitforxuyang/eva/proto"
+	"github.com/Gitforxuyang/eva/wrapper/catch"
 	"github.com/Gitforxuyang/eva/wrapper/log"
 	"github.com/sirupsen/logrus"
 	"google.golang.org/grpc"
@@ -37,7 +38,10 @@ func GetGRpcSayHelloServiceClient() GRpcSayHelloServiceClient {
 				Timeout:             time.Second * 1,
 				PermitWithoutStream: true,
 			}),
-		grpc.WithChainUnaryInterceptor(log.NewClientWrapper()),
+		grpc.WithChainUnaryInterceptor(
+			log.NewClientWrapper(),
+			catch.NewClientWrapper(),
+		),
 	)
 	c := &grpcSayHelloServiceClient{}
 	c.client = hello.NewSayHelloServiceClient(conn)

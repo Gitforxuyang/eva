@@ -22,9 +22,10 @@ type evaLogger struct {
 }
 
 func (m *evaLogger) getFields(ctx context.Context, fields Fields) []zap.Field {
-	fids := make([]zap.Field, 0, len(fields)+2)
+	fids := make([]zap.Field, 0, len(fields)+3)
 	fids = append(fids, zap.Any("timestamp", utils.FormatTime(time.Now(), "2006-01-01 15:04:05")))
 	fids = append(fids, zap.Any("traceId", utils.GetTraceId(ctx)))
+	fids = append(fids, zap.Any("appId", m.appId))
 	for k, v := range fields {
 		fids = append(fids, zap.Any(k, v))
 	}
@@ -63,10 +64,21 @@ var (
 	m *evaLogger
 )
 
+type Demo struct {
+	Name string
+	A    *Animal
+}
+
+type Animal struct {
+	Animal string
+}
+
 func Init(appId string) error {
 	m = &evaLogger{appId: appId}
 	var err error
 	m.log, err = zap.NewProduction(zap.AddCaller(), zap.AddCallerSkip(1), zap.AddStacktrace(zapcore.WarnLevel))
+	//d := Demo{Name: "123123", A: &Animal{Animal: "dog"}}
+	//m.Info(context.TODO(), "msg", Fields{"d": d, "key": "value"})
 	return err
 }
 func GetLogger() EvaLogger {

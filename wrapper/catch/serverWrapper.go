@@ -1,28 +1,27 @@
-package log
+package catch
 
 import (
 	"context"
-	"fmt"
+	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
-	"github.com/Gitforxuyang/eva/util/utils"
 	"google.golang.org/grpc"
-	"time"
 )
 
 func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 	log := logger.GetLogger()
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
-		start := time.Now()
 		defer func() {
-
-			log.Info(ctx, "收到的请求", logger.Fields{
-				"req":     utils.StructToMap(req),
-				"resp":    utils.StructToMap(resp),
-				"method":  info.FullMethod,
-				"useTime": fmt.Sprintf("%s", time.Now().Sub(start).String()),
-				"err":     utils.StructToMap(err),
-			})
+			if e := recover(); e != nil {
+				err = error2.Parse("发生异常")
+				log.Panic(ctx, "发生panic", logger.Fields{"e": e})
+				//TODO:sentry捕获
+			}
 		}()
-		return handler(ctx, req)
+		resp, err = handler(ctx, req)
+		if err != nil {
+			evaError := error2.FromError(err)
+			return resp, error2.EncodeStatus(evaError).Err()
+		}
+		return resp, err
 	}
 }
