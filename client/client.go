@@ -2,7 +2,9 @@ package client
 
 import (
 	"context"
+	"fmt"
 	"github.com/Gitforxuyang/eva/client/selector"
+	"github.com/Gitforxuyang/eva/config"
 	hello "github.com/Gitforxuyang/eva/examples/proto"
 	trace2 "github.com/Gitforxuyang/eva/util/trace"
 	"github.com/Gitforxuyang/eva/wrapper/catch"
@@ -29,11 +31,12 @@ func (m *grpcSayHelloServiceClient) Hello(ctx context.Context, req *hello.String
 
 func GetGRpcSayHelloServiceClient() GRpcSayHelloServiceClient {
 	tracer := trace2.GetTracer()
-	conn, err := grpc.Dial(":50001",
+	grpcClientConfig := config.GetConfig().GetApp("client")
+	conn, err := grpc.Dial(fmt.Sprintf("%s", grpcClientConfig.Endpoint),
 		grpc.WithInsecure(),
 		grpc.WithBlock(),
 		grpc.WithBalancerName(roundrobin.Name),
-		grpc.WithResolvers(selector.NewCustomResolverBuilder("dns")),
+		grpc.WithResolvers(selector.NewCustomResolverBuilder(grpcClientConfig.Mode)),
 		grpc.WithKeepaliveParams(
 			keepalive.ClientParameters{
 				Time:                time.Second * 10,
@@ -43,7 +46,7 @@ func GetGRpcSayHelloServiceClient() GRpcSayHelloServiceClient {
 		grpc.WithChainUnaryInterceptor(
 			trace.NewClientWrapper(tracer),
 			log.NewClientWrapper(),
-			catch.NewClientWrapper(),
+			catch.NewClientWrapper(grpcClientConfig.Timeout),
 		),
 	)
 	c := &grpcSayHelloServiceClient{}

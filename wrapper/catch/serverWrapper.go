@@ -20,8 +20,8 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 		}()
 		deadline, _ := ctx.Deadline()
 		//如果超时5s在deadline之后，则重置deadline为5s后
-		if time.Now().Add(time.Second * 3).After(deadline) {
-			ctx, _ = context.WithTimeout(ctx, time.Second*3)
+		if time.Now().Add(time.Second * 5).After(deadline) {
+			ctx, _ = context.WithTimeout(ctx, time.Second*5)
 		}
 		resp, err = handler(ctx, req)
 		if err != nil {

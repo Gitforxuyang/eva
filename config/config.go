@@ -14,6 +14,11 @@ type TraceConfig struct {
 	Ratio    float64
 }
 
+type GRpcClientConfig struct {
+	Mode     string //dns etcd
+	Endpoint string
+	Timeout  int64 //请求超时时间
+}
 type EvaConfig struct {
 	name              string
 	port              int32
@@ -21,6 +26,7 @@ type EvaConfig struct {
 	config            map[string]interface{}
 	v                 *viper.Viper
 	changeNotifyFuncs []ChangeNotify
+	apps              map[string]*GRpcClientConfig
 }
 
 var (
@@ -32,6 +38,7 @@ func Init() {
 		config = &EvaConfig{}
 		config.config = make(map[string]interface{})
 		config.changeNotifyFuncs = make([]ChangeNotify, 0)
+		config.apps = make(map[string]*GRpcClientConfig)
 		v := viper.New()
 		v.SetConfigName("config.default")
 		v.AddConfigPath("./conf")
@@ -60,6 +67,10 @@ func Init() {
 			panic("配置文件中port不能为空")
 		}
 		config.v = v
+		err = v.UnmarshalKey("apps", &config.apps)
+		if err != nil {
+			panic(err)
+		}
 	}
 }
 
@@ -97,6 +108,14 @@ func (m *EvaConfig) GetTraceConfig() TraceConfig {
 	err := m.v.UnmarshalKey("trace", &c)
 	if err != nil {
 		panic(err)
+	}
+	return c
+}
+
+func (m *EvaConfig) GetApp(app string) *GRpcClientConfig {
+	c := m.apps[app]
+	if c == nil {
+		panic(fmt.Sprintf("app：%s配置未找到", app))
 	}
 	return c
 }

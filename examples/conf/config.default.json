@@ -14,5 +14,12 @@
   "trace": {
     "endpoint": "http://192.168.3.23:14268/api/traces",
     "ratio": 1
+  },
+  "apps": {
+    "client": {
+      "endpoint": ":50001",
+      "timeout": 5,
+      "mode": "dns"
+    }
   }
 }
