@@ -19,6 +19,12 @@ type GRpcClientConfig struct {
 	Endpoint string
 	Timeout  int64 //请求超时时间
 }
+type LogConfig struct {
+	Server     bool   //服务端日志是否打印
+	GRpcClient bool   //grpc客户端日志
+	HttpClient bool   //http客户端日志
+	Level      string //日志打印级别
+}
 type EvaConfig struct {
 	name              string
 	port              int32
@@ -26,7 +32,8 @@ type EvaConfig struct {
 	config            map[string]interface{}
 	v                 *viper.Viper
 	changeNotifyFuncs []ChangeNotify
-	apps              map[string]*GRpcClientConfig
+	grpc              map[string]*GRpcClientConfig
+	log               *LogConfig
 }
 
 var (
@@ -38,7 +45,8 @@ func Init() {
 		config = &EvaConfig{}
 		config.config = make(map[string]interface{})
 		config.changeNotifyFuncs = make([]ChangeNotify, 0)
-		config.apps = make(map[string]*GRpcClientConfig)
+		config.grpc = make(map[string]*GRpcClientConfig)
+		config.log = &LogConfig{Server: false, GRpcClient: false, HttpClient: false, Level: "LOG"}
 		v := viper.New()
 		v.SetConfigName("config.default")
 		v.AddConfigPath("./conf")
@@ -67,7 +75,11 @@ func Init() {
 			panic("配置文件中port不能为空")
 		}
 		config.v = v
-		err = v.UnmarshalKey("apps", &config.apps)
+		err = v.UnmarshalKey("grpc", &config.grpc)
+		if err != nil {
+			panic(err)
+		}
+		err = v.UnmarshalKey("log", &config.log)
 		if err != nil {
 			panic(err)
 		}
@@ -112,10 +124,17 @@ func (m *EvaConfig) GetTraceConfig() TraceConfig {
 	return c
 }
 
-func (m *EvaConfig) GetApp(app string) *GRpcClientConfig {
-	c := m.apps[app]
+func (m *EvaConfig) GetGRpc(app string) *GRpcClientConfig {
+	c := m.grpc[app]
 	if c == nil {
-		panic(fmt.Sprintf("app：%s配置未找到", app))
+		panic(fmt.Sprintf("grpc：%s配置未找到", app))
 	}
 	return c
+}
+
+func (m *EvaConfig) GetLogConfig() *LogConfig {
+	if m.log == nil {
+		panic(fmt.Sprintf("log配置未找到"))
+	}
+	return m.log
 }

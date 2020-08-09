@@ -31,7 +31,7 @@ func (m *grpcSayHelloServiceClient) Hello(ctx context.Context, req *hello.String
 
 func GetGRpcSayHelloServiceClient() GRpcSayHelloServiceClient {
 	tracer := trace2.GetTracer()
-	grpcClientConfig := config.GetConfig().GetApp("client")
+	grpcClientConfig := config.GetConfig().GetGRpc("client")
 	conn, err := grpc.Dial(fmt.Sprintf("%s", grpcClientConfig.Endpoint),
 		grpc.WithInsecure(),
 		grpc.WithBlock(),

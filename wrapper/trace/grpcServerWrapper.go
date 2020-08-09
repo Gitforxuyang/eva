@@ -2,7 +2,6 @@ package trace
 
 import (
 	"context"
-	"fmt"
 	"github.com/Gitforxuyang/eva/util/logger"
 	"github.com/Gitforxuyang/eva/util/trace"
 	"github.com/Gitforxuyang/eva/util/utils"
@@ -19,7 +18,6 @@ func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req in
 		}
 		defer span.Finish()
 		resp, err = handler(ctx, req)
-		fmt.Println("trace")
 		span.LogFields(
 			log.Object("req", utils.StructToJson(req)),
 			log.Object("resp", utils.StructToJson(resp)),
