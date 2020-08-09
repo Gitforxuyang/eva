@@ -26,20 +26,20 @@ func GetTracer() *Tracer {
 
 }
 
-func Init(serviceName string, addr string) {
-	t, err := NewTracer(serviceName, addr)
+func Init(serviceName string, addr string, ratio float64) {
+	t, err := newTracer(serviceName, addr, ratio)
 	if err != nil {
 		panic(err)
 	}
 	tracer = t
 }
 
-func NewTracer(serviceName string, addr string) (*Tracer, error) {
+func newTracer(serviceName string, addr string, ratio float64) (*Tracer, error) {
 	cfg := config.Configuration{
 		ServiceName: serviceName,
 		Sampler: &config.SamplerConfig{
 			Type:  jaeger.SamplerTypeProbabilistic,
-			Param: 1,
+			Param: ratio,
 		},
 		Reporter: &config.ReporterConfig{
 			LogSpans:            true,

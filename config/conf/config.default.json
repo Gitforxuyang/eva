@@ -1,0 +1,14 @@
+
+{
+  "name": "demo",
+  "port": 50001,
+  "mongo": {
+    "node": {
+      "url": "node url",
+      "name": "node"
+    },
+    "main": {
+      "url": "main url"
+    }
+  }
+}

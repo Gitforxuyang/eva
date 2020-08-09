@@ -1,0 +1,9 @@
+
+{
+  "name": "eva-example-local",
+  "mongo": {
+    "node": {
+      "url": "node local url"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+
+{
+  "name": "eva-example",
+  "port": 50001,
+  "mongo": {
+    "node": {
+      "url": "node url",
+      "name": "node"
+    },
+    "main": {
+      "url": "main url"
+    }
+  },
+  "trace": {
+    "endpoint": "http://192.168.3.23:14268/api/traces",
+    "ratio": 1
+  }
+}
