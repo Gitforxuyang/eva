@@ -1,16 +1,19 @@
 package main
 
 import (
-	"github.com/Gitforxuyang/eva/examples/proto"
+	"github.com/Gitforxuyang/eva/examples/proto/hello"
 	"github.com/Gitforxuyang/eva/examples/service"
 	"github.com/Gitforxuyang/eva/server"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	server.Run(func(server *grpc.Server) {
+	server.Init(func(server *grpc.Server) {
 		hello.RegisterSayHelloServiceServer(server, &service.HelloServiceServer{})
 	})
+	//client:=client2.GetGRpcSayHelloServiceClient()
+	server.Run()
+
 	//listen, err := net.Listen("tcp", ":50001")
 	//if err != nil {
 	//	panic(err)

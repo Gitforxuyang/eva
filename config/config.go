@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/Gitforxuyang/eva/util/utils"
 	"github.com/spf13/viper"
+	"strings"
 )
 
 //配置发送变更时的通知
@@ -52,9 +53,7 @@ func Init() {
 		v.AddConfigPath("./conf")
 		v.SetConfigType("json")
 		err := v.ReadInConfig()
-		if err != nil {
-			panic(err)
-		}
+		utils.Must(err)
 		v.BindEnv("ENV")
 		env := v.GetString("ENV")
 		if env == "" {
@@ -63,9 +62,7 @@ func Init() {
 		config.env = env
 		v.SetConfigName(fmt.Sprintf("config.%s", env))
 		err = v.MergeInConfig()
-		if err != nil {
-			panic(err)
-		}
+		utils.Must(err)
 		config.name = v.GetString("name")
 		if config.name == "" {
 			panic("配置文件中name不能为空")
@@ -76,13 +73,9 @@ func Init() {
 		}
 		config.v = v
 		err = v.UnmarshalKey("grpc", &config.grpc)
-		if err != nil {
-			panic(err)
-		}
+		utils.Must(err)
 		err = v.UnmarshalKey("log", &config.log)
-		if err != nil {
-			panic(err)
-		}
+		utils.Must(err)
 	}
 }
 
@@ -118,14 +111,12 @@ func (m *EvaConfig) GetTraceConfig() TraceConfig {
 		panic("trace设置不能为空")
 	}
 	err := m.v.UnmarshalKey("trace", &c)
-	if err != nil {
-		panic(err)
-	}
+	utils.Must(err)
 	return c
 }
 
 func (m *EvaConfig) GetGRpc(app string) *GRpcClientConfig {
-	c := m.grpc[app]
+	c := m.grpc[strings.ToLower(app)]
 	if c == nil {
 		panic(fmt.Sprintf("grpc：%s配置未找到", app))
 	}

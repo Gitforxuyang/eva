@@ -16,10 +16,14 @@
     "ratio": 1
   },
   "grpc": {
-    "client": {
+    "SayHelloService": {
       "endpoint": ":50001",
       "timeout": 5,
       "mode": "dns"
     }
+  },
+  "log": {
+    "server": true,
+    "grpcClient": true
   }
 }

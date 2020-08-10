@@ -1,6 +1,7 @@
 package trace
 
 import (
+	"github.com/Gitforxuyang/eva/util/utils"
 	"github.com/opentracing/opentracing-go"
 	"github.com/uber/jaeger-client-go"
 	"github.com/uber/jaeger-client-go/config"
@@ -19,18 +20,14 @@ var (
 )
 
 func GetTracer() *Tracer {
-	if tracer == nil {
-		panic("tracer不存在")
-	}
+	utils.NotNil(tracer, "tracer")
 	return tracer
 
 }
 
 func Init(serviceName string, addr string, ratio float64) {
 	t, err := newTracer(serviceName, addr, ratio)
-	if err != nil {
-		panic(err)
-	}
+	utils.Must(err)
 	tracer = t
 }
 

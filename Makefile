@@ -1,5 +1,5 @@
 
 
 eva:
-	protoc -I=./proto --go_out=plugins=grpc:./proto hello.proto
-	protoc -I=./proto --eva_out=plugins=all:./proto hello.proto
+	protoc -I=./examples/proto --go_out=plugins=grpc:./examples/proto/hello hello.proto
+	protoc -I=./examples/proto --eva_out=plugins=all:./examples/proto/hello hello.proto

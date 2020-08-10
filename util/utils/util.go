@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"github.com/fatih/structs"
 	"reflect"
 )
@@ -30,4 +31,16 @@ func IsNil(i interface{}) bool {
 	}
 
 	return false
+}
+
+func Must(err error) {
+	if err != nil {
+		panic(err)
+	}
+}
+
+func NotNil(v interface{}, name string) {
+	if IsNil(v) {
+		panic(fmt.Sprintf("%s不能为Nil", name))
+	}
 }
