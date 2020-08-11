@@ -5,6 +5,7 @@ import (
 	"github.com/Gitforxuyang/eva/util/utils"
 	"github.com/spf13/viper"
 	"strings"
+	"time"
 )
 
 //配置发送变更时的通知
@@ -31,6 +32,16 @@ type LogConfig struct {
 	HttpClient bool   //http客户端日志
 	Level      string //日志打印级别
 }
+type RedisConfig struct {
+	Addr         string
+	Password     string
+	DB           int
+	PoolSize     int
+	MinIdleConns int
+	DialTimeout  time.Duration
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
+}
 type EvaConfig struct {
 	name              string
 	port              int32
@@ -41,6 +52,7 @@ type EvaConfig struct {
 	grpc              map[string]*GRpcClientConfig
 	http              map[string]*HttpClientConfig
 	log               *LogConfig
+	redis             map[string]*RedisConfig
 }
 
 var (
@@ -53,7 +65,8 @@ func Init() {
 		config.config = make(map[string]interface{})
 		config.changeNotifyFuncs = make([]ChangeNotify, 0)
 		config.grpc = make(map[string]*GRpcClientConfig)
-		config.log = &LogConfig{Server: false, GRpcClient: false, HttpClient: false, Level: "LOG"}
+		config.redis = make(map[string]*RedisConfig)
+		config.log = &LogConfig{Server: false, GRpcClient: false, HttpClient: false, Level: "INFO"}
 		v := viper.New()
 		v.SetConfigName("config.default")
 		v.AddConfigPath("./conf")
@@ -83,6 +96,8 @@ func Init() {
 		err = v.UnmarshalKey("log", &config.log)
 		utils.Must(err)
 		err = v.UnmarshalKey("http", &config.http)
+		utils.Must(err)
+		err = v.UnmarshalKey("redis", &config.redis)
 		utils.Must(err)
 	}
 }
@@ -143,4 +158,12 @@ func (m *EvaConfig) GetLogConfig() *LogConfig {
 		panic(fmt.Sprintf("log配置未找到"))
 	}
 	return m.log
+}
+
+func (m *EvaConfig) GetRedis(name string) *RedisConfig {
+	c := m.redis[strings.ToLower(name)]
+	if c == nil {
+		panic(fmt.Sprintf("redis：%s配置未找到", name))
+	}
+	return c
 }

@@ -22,6 +22,16 @@ var (
 		Message: "类型转换错误",
 		Status:  codes.Internal,
 	}
+	ContextDieError = EvaError{
+		Code:    4001,
+		Message: "context已到期",
+		Status:  codes.DeadlineExceeded,
+	}
+	RedisError = EvaError{
+		Code:    5001,
+		Message: "redis发生异常",
+		Status:  codes.Internal,
+	}
 )
 
 type EvaError struct {

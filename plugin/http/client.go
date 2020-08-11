@@ -14,6 +14,7 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -54,30 +55,40 @@ type evaHttp struct {
 	tracer *trace.Tracer
 }
 
+var (
+	client *evaHttp
+	lock   sync.Mutex
+)
+
 func GetHttpClient(name string) EvaHttp {
-	conf := config.GetConfig().GetHttp(name)
-	h := new(evaHttp)
-	h.addr = conf.Endpoint
-	h.cli = &http.Client{
-		Timeout: time.Second * time.Duration(conf.Timeout),
-		Transport: &http.Transport{
-			DialContext: (&net.Dialer{
-				Timeout:   time.Second * time.Duration(conf.Timeout),
-				KeepAlive: 30 * time.Second,
-				DualStack: true,
-			}).DialContext,
-			MaxIdleConns:          conf.MaxConn,
-			MaxIdleConnsPerHost:   conf.MaxConn,
-			MaxConnsPerHost:       conf.MaxConn,
-			IdleConnTimeout:       90 * time.Second,
-			TLSHandshakeTimeout:   10 * time.Second,
-			ExpectContinueTimeout: 1 * time.Second,
-		},
+	lock.Lock()
+	defer lock.Unlock()
+	if client == nil {
+		conf := config.GetConfig().GetHttp(name)
+		h := new(evaHttp)
+		h.addr = conf.Endpoint
+		h.cli = &http.Client{
+			Timeout: time.Second * time.Duration(conf.Timeout),
+			Transport: &http.Transport{
+				DialContext: (&net.Dialer{
+					Timeout:   time.Second * time.Duration(conf.Timeout),
+					KeepAlive: 30 * time.Second,
+					DualStack: true,
+				}).DialContext,
+				MaxIdleConns:          conf.MaxConn,
+				MaxIdleConnsPerHost:   conf.MaxConn,
+				MaxConnsPerHost:       conf.MaxConn,
+				IdleConnTimeout:       90 * time.Second,
+				TLSHandshakeTimeout:   10 * time.Second,
+				ExpectContinueTimeout: 1 * time.Second,
+			},
+		}
+		h.conf = config.GetConfig()
+		h.log = logger.GetLogger()
+		h.tracer = trace.GetTracer()
+		client = h
 	}
-	h.conf = config.GetConfig()
-	h.log = logger.GetLogger()
-	h.tracer = trace.GetTracer()
-	return h
+	return client
 }
 func (m *evaHttp) DoRpc(ctx context.Context, uri string, method HttpMethod, headers Headers, data map[string]interface{}) (resp map[string]interface{}, err error) {
 	start := time.Now()
