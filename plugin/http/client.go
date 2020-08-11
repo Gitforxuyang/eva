@@ -222,7 +222,11 @@ func (m *evaHttp) do(ctx context.Context, uri string, method HttpMethod, headers
 	if method == METHOD_GET {
 		values := req.URL.Query()
 		for k, v := range data {
-			values.Add(k, utils.StructToJson(v))
+			vv, ok := v.(string)
+			if !ok {
+				return nil, error2.TypeError.SetAppId(m.conf.GetName()).SetMessage("get请求的参数值只能为string类型")
+			}
+			values.Add(k, vv)
 		}
 		req.URL.RawQuery = values.Encode()
 	} else {

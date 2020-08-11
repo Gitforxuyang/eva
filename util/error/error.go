@@ -17,6 +17,11 @@ var (
 		Message: "http错误",
 		Status:  codes.Internal,
 	}
+	TypeError = EvaError{
+		Code:    3001,
+		Message: "类型转换错误",
+		Status:  codes.Internal,
+	}
 )
 
 type EvaError struct {

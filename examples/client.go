@@ -20,7 +20,8 @@ func main() {
 	//client.Hello(context.TODO(), &hello.String{Name: strconv.Itoa(int(time.Now().Unix()))})
 	client := http.GetHttpClient("demo-svc")
 	data := make(map[string]interface{})
-	resp, err := client.Do(context.TODO(), "/ping1", http.METHOD_GET, http.Headers{}, data)
+	data["name"] = "123"
+	resp, err := client.Do(context.TODO(), "/ping1?age=123", http.METHOD_GET, http.Headers{}, data)
 	if err != nil {
 		time.Sleep(time.Second * 3)
 		panic(err)
