@@ -20,6 +20,11 @@ type GRpcClientConfig struct {
 	Endpoint string
 	Timeout  int64 //请求超时时间
 }
+type HttpClientConfig struct {
+	Endpoint string
+	Timeout  int64
+	MaxConn  int //最大连接数
+}
 type LogConfig struct {
 	Server     bool   //服务端日志是否打印
 	GRpcClient bool   //grpc客户端日志
@@ -34,6 +39,7 @@ type EvaConfig struct {
 	v                 *viper.Viper
 	changeNotifyFuncs []ChangeNotify
 	grpc              map[string]*GRpcClientConfig
+	http              map[string]*HttpClientConfig
 	log               *LogConfig
 }
 
@@ -75,6 +81,8 @@ func Init() {
 		err = v.UnmarshalKey("grpc", &config.grpc)
 		utils.Must(err)
 		err = v.UnmarshalKey("log", &config.log)
+		utils.Must(err)
+		err = v.UnmarshalKey("http", &config.http)
 		utils.Must(err)
 	}
 }
@@ -119,6 +127,13 @@ func (m *EvaConfig) GetGRpc(app string) *GRpcClientConfig {
 	c := m.grpc[strings.ToLower(app)]
 	if c == nil {
 		panic(fmt.Sprintf("grpc：%s配置未找到", app))
+	}
+	return c
+}
+func (m *EvaConfig) GetHttp(http string) *HttpClientConfig {
+	c := m.http[strings.ToLower(http)]
+	if c == nil {
+		panic(fmt.Sprintf("http：%s配置未找到", http))
 	}
 	return c
 }

@@ -21,6 +21,24 @@ func StructToJson(v interface{}) string {
 	bytes, _ := json.Marshal(v)
 	return string(bytes)
 }
+
+//json字符串转结构体
+func JsonToStruct(str string, s interface{}) error {
+	err := json.Unmarshal([]byte(str), s)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func JsonToMap(str string) (map[string]interface{}, error) {
+	m := make(map[string]interface{})
+	err := json.Unmarshal([]byte(str), &m)
+	if err != nil {
+		return m, err
+	}
+	return m, nil
+}
 func IsNil(i interface{}) bool {
 	if i == nil {
 		return true

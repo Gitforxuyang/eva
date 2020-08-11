@@ -12,6 +12,11 @@ var (
 		Message: "未知错误",
 		Status:  codes.Unknown,
 	}
+	HttpError = EvaError{
+		Code:    2001,
+		Message: "http错误",
+		Status:  codes.Internal,
+	}
 )
 
 type EvaError struct {
@@ -26,7 +31,19 @@ func (m EvaError) SetDetail(detail string) EvaError {
 	m.Detail = detail
 	return m
 }
-func (e *EvaError) Error() string {
+func (m EvaError) SetCode(code int32) EvaError {
+	m.Code = code
+	return m
+}
+func (m EvaError) SetAppId(v string) EvaError {
+	m.AppId = v
+	return m
+}
+func (m EvaError) SetMessage(msg string) EvaError {
+	m.Message = msg
+	return m
+}
+func (e EvaError) Error() string {
 	b, _ := json.Marshal(e)
 	return string(b)
 }

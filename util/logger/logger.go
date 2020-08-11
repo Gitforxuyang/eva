@@ -64,15 +64,6 @@ var (
 	m *evaLogger
 )
 
-type Demo struct {
-	Name string
-	A    *Animal
-}
-
-type Animal struct {
-	Animal string
-}
-
 func Init(appId string) error {
 	m = &evaLogger{appId: appId}
 	var err error

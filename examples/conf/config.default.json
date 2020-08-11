@@ -22,8 +22,16 @@
       "mode": "dns"
     }
   },
+  "http": {
+    "demo-svc": {
+      "endpoint": "http://127.0.0.1:8080",
+      "timeout": 5,
+      "maxConn": 10
+    }
+  },
   "log": {
     "server": true,
-    "grpcClient": true
+    "grpcClient": true,
+    "httpClient": true
   }
 }
