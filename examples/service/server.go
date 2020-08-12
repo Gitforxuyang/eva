@@ -17,7 +17,11 @@ func NewHelloServiceServer(rdb redis.EvaRedis) *HelloServiceServer {
 
 func (m *HelloServiceServer) Hello(ctx context.Context, req *hello.String) (*hello.String, error) {
 	ctx, _ = context.WithTimeout(ctx, time.Second*1000)
-	_, err := m.redis.Set(ctx, "rdb:demo", "1", 0)
+	lock, err := m.redis.Lock(ctx, "demo:lock:key", time.Second*20, redis.LockOptions(time.Millisecond*0, 0))
+	if err != nil {
+		return nil, err
+	}
+	err = lock.UnLock(ctx)
 	if err != nil {
 		return nil, err
 	}

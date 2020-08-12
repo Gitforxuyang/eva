@@ -129,13 +129,24 @@ type EvaRedis interface {
 	ZRevRank(ctx context.Context, key, member string) (int64, error)
 	ZScore(ctx context.Context, key, member string) (float64, error)
 	ZUnionStore(ctx context.Context, dest string, store *redis.ZStore) (int64, error)
+	Lock(ctx context.Context, key string, ttl time.Duration, opt *LockOption) (*Lock, error)
 }
 
+func LockOptions(retryDuration time.Duration, max int) *LockOption {
+	return &LockOption{retryDuration, max}
+}
+
+type LockOption struct {
+	retryDuration time.Duration //每次重试的间隔
+	maxRetry      int           //最大重试次数
+}
 type evaRedis struct {
 	client *redis.Client
 	name   string
 	addr   string
 	db     int
+	tmp    []byte
+	tmpMu  sync.Mutex
 }
 
 var (
@@ -199,7 +210,7 @@ func (m *redisHook) AfterProcess(ctx context.Context, cmd redis.Cmder) (err erro
 	defer span.Finish()
 	defer func() {
 		if err != nil {
-			//ext.Error.Set(span, true)
+			ext.Error.Set(span, true)
 			span.LogFields(log.String("event", "error"))
 			span.LogFields(
 				log.Object("evaError", utils.StructToJson(err)),
@@ -214,10 +225,12 @@ func (m *redisHook) AfterProcess(ctx context.Context, cmd redis.Cmder) (err erro
 }
 
 func (m *redisHook) BeforeProcessPipeline(ctx context.Context, cmds []redis.Cmder) (context.Context, error) {
+	fmt.Println("BeforeProcessPipeline")
 	return ctx, nil
 }
 
 func (m *redisHook) AfterProcessPipeline(ctx context.Context, cmds []redis.Cmder) error {
+	fmt.Println("AfterProcessPipeline")
 	return nil
 }
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Gitforxuyang/eva/config"
+	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
 	"github.com/Gitforxuyang/eva/util/utils"
 	"google.golang.org/grpc"
@@ -17,13 +18,17 @@ func NewClientWrapper() func(ctx context.Context, method string, req, reply inte
 		start := time.Now()
 		var err error
 		defer func() {
+			emap := map[string]interface{}{}
+			if err != nil {
+				emap = utils.StructToMap(error2.DecodeStatus(err))
+			}
 			if conf.GetLogConfig().GRpcClient {
 				log.Info(ctx, "发起的请求", logger.Fields{
 					"req":     utils.StructToMap(req),
 					"resp":    utils.StructToMap(reply),
 					"method":  method,
 					"useTime": fmt.Sprintf("%s", time.Now().Sub(start).String()),
-					"err":     utils.StructToMap(err),
+					"err":     emap,
 				})
 			}
 		}()

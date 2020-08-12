@@ -97,6 +97,7 @@ func EncodeStatus(e *EvaError) *status.Status {
 }
 
 func DecodeStatus(e error) *EvaError {
+
 	status, ok := status.FromError(e)
 	if !ok {
 		return Parse(e.Error())

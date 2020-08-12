@@ -17,13 +17,17 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		start := time.Now()
 		defer func() {
+			emap := map[string]interface{}{}
+			if err != nil {
+				emap = utils.StructToMap(error2.DecodeStatus(err))
+			}
 			if config.GetLogConfig().Server {
 				log.Info(ctx, "收到的请求", logger.Fields{
 					"req":     utils.StructToMap(req),
 					"resp":    utils.StructToMap(resp),
 					"method":  info.FullMethod,
 					"useTime": fmt.Sprintf("%s", time.Now().Sub(start).String()),
-					"err":     utils.StructToMap(error2.DecodeStatus(err)),
+					"err":     emap,
 				})
 			}
 		}()
