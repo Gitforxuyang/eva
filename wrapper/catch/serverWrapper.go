@@ -26,7 +26,7 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 		}
 		resp, err = handler(ctx, req)
 		if err != nil {
-			fmt.Print(err)
+			fmt.Println(err)
 			evaError := error2.FromError(err)
 			return resp, error2.EncodeStatus(evaError).Err()
 		}

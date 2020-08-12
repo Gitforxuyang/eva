@@ -2,11 +2,9 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/Gitforxuyang/eva/examples/proto/hello"
 	"github.com/Gitforxuyang/eva/plugin/mongo"
 	"github.com/Gitforxuyang/eva/plugin/redis"
-	"time"
 )
 
 type HelloServiceServer struct {
@@ -23,9 +21,10 @@ type Animal struct {
 }
 
 func (m *HelloServiceServer) Hello(ctx context.Context, req *hello.String) (*hello.String, error) {
+	a := &Animal{String: "str"}
 	_, err := m.mongo.Database("demo").Collection("demo").InsertOne(ctx, a)
 	if err != nil {
-		fmt.Println(err)
+		return nil, err
 	}
 	return &hello.String{}, nil
 }

@@ -2,6 +2,7 @@ package trace
 
 import (
 	"context"
+	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
 	"github.com/Gitforxuyang/eva/util/trace"
 	"github.com/Gitforxuyang/eva/util/utils"
@@ -26,7 +27,7 @@ func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req in
 			ext.Error.Set(span, true)
 			span.LogFields(log.String("event", "error"))
 			span.LogFields(
-				log.Object("evaError", utils.StructToJson(err)),
+				log.Object("evaError", utils.StructToJson(error2.DecodeStatus(err))),
 			)
 		}
 		return resp, err
