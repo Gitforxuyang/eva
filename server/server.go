@@ -29,7 +29,7 @@ var (
 	shutdownFunc []RegisterShutdown = make([]RegisterShutdown, 0)
 )
 
-func Init(registerService RegisterService) {
+func Init() {
 	config.Init()
 	conf := config.GetConfig()
 	var err error
@@ -49,9 +49,12 @@ func Init(registerService RegisterService) {
 		//MaxConnectionAge:time.Second*20,
 		//}),
 	)
-	registerService(grpcServer)
 	//hello.RegisterSayHelloServiceServer(grpcServer, &service.HelloServiceServer{})
 
+}
+
+func RegisterGRpcService(registerService RegisterService) {
+	registerService(grpcServer)
 }
 
 func Run() {

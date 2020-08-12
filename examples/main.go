@@ -3,13 +3,16 @@ package main
 import (
 	"github.com/Gitforxuyang/eva/examples/proto/hello"
 	"github.com/Gitforxuyang/eva/examples/service"
+	"github.com/Gitforxuyang/eva/plugin/redis"
 	"github.com/Gitforxuyang/eva/server"
 	"google.golang.org/grpc"
 )
 
 func main() {
-	server.Init(func(server *grpc.Server) {
-		hello.RegisterSayHelloServiceServer(server, &service.HelloServiceServer{})
+	server.Init()
+	rdb := redis.GetRedisClient("node")
+	server.RegisterGRpcService(func(server *grpc.Server) {
+		hello.RegisterSayHelloServiceServer(server, service.NewHelloServiceServer(rdb))
 	})
 	//client:=client2.GetGRpcSayHelloServiceClient()
 	server.Run()

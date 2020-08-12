@@ -2,14 +2,24 @@ package service
 
 import (
 	"context"
-	hello "github.com/Gitforxuyang/eva/examples/proto"
-	error2 "github.com/Gitforxuyang/eva/util/error"
-	"google.golang.org/grpc/codes"
+	"github.com/Gitforxuyang/eva/examples/proto/hello"
+	"github.com/Gitforxuyang/eva/plugin/redis"
+	"time"
 )
 
 type HelloServiceServer struct {
+	redis redis.EvaRedis
 }
 
-func (HelloServiceServer) Hello(ctx context.Context, req *hello.String) (*hello.String, error) {
-	return &hello.String{}, error2.New("demo", "自定义错误", "测试用的", 10001, codes.Internal)
+func NewHelloServiceServer(rdb redis.EvaRedis) *HelloServiceServer {
+	return &HelloServiceServer{redis: rdb}
+}
+
+func (m *HelloServiceServer) Hello(ctx context.Context, req *hello.String) (*hello.String, error) {
+	ctx, _ = context.WithTimeout(ctx, time.Second*1000)
+	_, err := m.redis.Set(ctx, "rdb:demo", "1", 0)
+	if err != nil {
+		return nil, err
+	}
+	return &hello.String{}, nil
 }
