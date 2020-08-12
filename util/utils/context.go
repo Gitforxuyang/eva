@@ -2,6 +2,7 @@ package utils
 
 import (
 	"context"
+	"fmt"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 )
 
@@ -20,6 +21,7 @@ func GetTraceId(ctx context.Context) string {
 func ContextDie(ctx context.Context) error {
 	select {
 	case <-ctx.Done():
+		fmt.Print("ContextDieError")
 		return error2.ContextDieError
 	default:
 		return nil

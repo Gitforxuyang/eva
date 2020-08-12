@@ -42,6 +42,11 @@ type RedisConfig struct {
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 }
+type MongoConfig struct {
+	Url         string
+	MaxPoolSize uint64
+	MinPoolSize uint64
+}
 type EvaConfig struct {
 	name              string
 	port              int32
@@ -53,6 +58,7 @@ type EvaConfig struct {
 	http              map[string]*HttpClientConfig
 	log               *LogConfig
 	redis             map[string]*RedisConfig
+	mongo             map[string]*MongoConfig
 }
 
 var (
@@ -66,6 +72,7 @@ func Init() {
 		config.changeNotifyFuncs = make([]ChangeNotify, 0)
 		config.grpc = make(map[string]*GRpcClientConfig)
 		config.redis = make(map[string]*RedisConfig)
+		config.mongo = make(map[string]*MongoConfig)
 		config.log = &LogConfig{Server: false, GRpcClient: false, HttpClient: false, Level: "INFO"}
 		v := viper.New()
 		v.SetConfigName("config.default")
@@ -98,6 +105,8 @@ func Init() {
 		err = v.UnmarshalKey("http", &config.http)
 		utils.Must(err)
 		err = v.UnmarshalKey("redis", &config.redis)
+		utils.Must(err)
+		err = v.UnmarshalKey("mongo", &config.mongo)
 		utils.Must(err)
 	}
 }
@@ -164,6 +173,13 @@ func (m *EvaConfig) GetRedis(name string) *RedisConfig {
 	c := m.redis[strings.ToLower(name)]
 	if c == nil {
 		panic(fmt.Sprintf("redis：%s配置未找到", name))
+	}
+	return c
+}
+func (m *EvaConfig) GetMongo(name string) *MongoConfig {
+	c := m.mongo[strings.ToLower(name)]
+	if c == nil {
+		panic(fmt.Sprintf("mongo：%s配置未找到", name))
 	}
 	return c
 }

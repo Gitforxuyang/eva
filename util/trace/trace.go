@@ -110,8 +110,19 @@ func (m *Tracer) StartRedisClientSpanFromContext(ctx context.Context, name strin
 	}
 	sp := m.tracer.StartSpan(name, opts...)
 	ext.SpanKindRPCClient.Set(sp)
-	ext.Component.Set(sp, "redis")
+	//ext.Component.Set(sp, "redis")
 	ext.DBType.Set(sp, "redis")
+	return ctx, sp, nil
+}
+
+func (m *Tracer) StartMongoClientSpanFromContext(ctx context.Context, name string, opts ...opentracing.StartSpanOption) (context.Context, opentracing.Span, error) {
+	if parentSpan := opentracing.SpanFromContext(ctx); parentSpan != nil {
+		opts = append(opts, opentracing.ChildOf(parentSpan.Context()))
+	}
+	sp := m.tracer.StartSpan(name, opts...)
+	ext.SpanKindRPCClient.Set(sp)
+	//ext.Component.Set(sp, "mongodb")
+	ext.DBType.Set(sp, "mongodb")
 	return ctx, sp, nil
 }
 

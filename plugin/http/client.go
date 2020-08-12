@@ -56,14 +56,14 @@ type evaHttp struct {
 }
 
 var (
-	client *evaHttp
+	client map[string]*evaHttp = make(map[string]*evaHttp)
 	lock   sync.Mutex
 )
 
 func GetHttpClient(name string) EvaHttp {
 	lock.Lock()
 	defer lock.Unlock()
-	if client == nil {
+	if client[name] == nil {
 		conf := config.GetConfig().GetHttp(name)
 		h := new(evaHttp)
 		h.addr = conf.Endpoint
@@ -86,9 +86,9 @@ func GetHttpClient(name string) EvaHttp {
 		h.conf = config.GetConfig()
 		h.log = logger.GetLogger()
 		h.tracer = trace.GetTracer()
-		client = h
+		client[name] = h
 	}
-	return client
+	return client[name]
 }
 func (m *evaHttp) DoRpc(ctx context.Context, uri string, method HttpMethod, headers Headers, data map[string]interface{}) (resp map[string]interface{}, err error) {
 	start := time.Now()

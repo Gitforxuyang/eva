@@ -62,6 +62,11 @@ func Run() {
 		err := grpcServer.Serve(listen)
 		utils.Must(err)
 	}()
+	logger.GetLogger().Info(context.TODO(), "server started", logger.Fields{
+		"port":   config.GetConfig().GetPort(),
+		"server": config.GetConfig().GetName(),
+		"env":    config.GetConfig().GetENV(),
+	})
 	c := make(chan os.Signal)
 	signal.Notify(c, syscall.SIGTERM, syscall.SIGKILL)
 	s := <-c

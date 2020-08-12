@@ -1,8 +1,6 @@
 
 {
   "mongo": {
-    "node": {
-      "url": "node local url"
-    }
+
   }
 }

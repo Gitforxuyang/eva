@@ -4,11 +4,9 @@
   "port": 50001,
   "mongo": {
     "node": {
-      "url": "node url",
-      "name": "node"
-    },
-    "main": {
-      "url": "main url"
+      "url": "mongodb://192.168.3.3:27017/demo",
+      "maxPoolSize": 20,
+      "minPoolSize": 20
     }
   },
   "redis": {

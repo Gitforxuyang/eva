@@ -16,6 +16,7 @@ require (
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
 	github.com/xordataexchange/crypt v0.0.2 // indirect
+	go.mongodb.org/mongo-driver v1.4.0
 	go.uber.org/zap v1.10.0
 	google.golang.org/grpc v1.31.0
 	google.golang.org/protobuf v1.25.0

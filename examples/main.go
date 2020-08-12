@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/Gitforxuyang/eva/examples/proto/hello"
 	"github.com/Gitforxuyang/eva/examples/service"
+	mongo2 "github.com/Gitforxuyang/eva/plugin/mongo"
 	"github.com/Gitforxuyang/eva/plugin/redis"
 	"github.com/Gitforxuyang/eva/server"
 	"google.golang.org/grpc"
@@ -11,8 +12,9 @@ import (
 func main() {
 	server.Init()
 	rdb := redis.GetRedisClient("node")
+	mongo := mongo2.GetMongoClient("node")
 	server.RegisterGRpcService(func(server *grpc.Server) {
-		hello.RegisterSayHelloServiceServer(server, service.NewHelloServiceServer(rdb))
+		hello.RegisterSayHelloServiceServer(server, service.NewHelloServiceServer(rdb, mongo))
 	})
 	//client:=client2.GetGRpcSayHelloServiceClient()
 	server.Run()

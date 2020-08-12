@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Gitforxuyang/eva/config"
+	"github.com/Gitforxuyang/eva/server"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
 	"github.com/Gitforxuyang/eva/util/trace"
@@ -151,13 +152,13 @@ type evaRedis struct {
 
 var (
 	lock   sync.Mutex
-	client *evaRedis
+	client map[string]*evaRedis = make(map[string]*evaRedis)
 )
 
 func GetRedisClient(name string) EvaRedis {
 	lock.Lock()
 	defer lock.Unlock()
-	if client == nil {
+	if client[name] == nil {
 		conf := config.GetConfig()
 		c := conf.GetRedis(name)
 		rdb := redis.NewClient(&redis.Options{
@@ -172,9 +173,13 @@ func GetRedisClient(name string) EvaRedis {
 		})
 		rdb.AddHook(&redisHook{tracer: trace.GetTracer(), log: logger.GetLogger(),
 			name: name, addr: c.Addr, db: c.DB, appName: conf.GetName()})
-		client = &evaRedis{client: rdb, name: name, addr: c.Addr, db: c.DB}
+		client[name] = &evaRedis{client: rdb, name: name, addr: c.Addr, db: c.DB}
+		//注册关闭服务时的优雅关闭
+		server.RegisterShutdownFunc(func() {
+			rdb.Close()
+		})
 	}
-	return client
+	return client[name]
 }
 
 type redisHook struct {
