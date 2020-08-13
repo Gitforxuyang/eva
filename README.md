@@ -16,4 +16,5 @@
 3.其它plugin
 4.broker
 5.api server自动注册并发现服务
+6.单元测试
 ```
