@@ -172,7 +172,7 @@ func GetRedisClient(name string) EvaRedis {
 			WriteTimeout: time.Second * time.Duration(c.WriteTimeout),
 		})
 		rdb.AddHook(&redisHook{tracer: trace.GetTracer(), log: logger.GetLogger(),
-			name: name, addr: c.Addr, db: c.DB, appName: conf.GetName()})
+			name: name, addr: c.Addr, db: c.DB, appName: conf.GetName(), traceConfig: conf.GetTraceConfig()})
 		client[name] = &evaRedis{client: rdb, name: name, addr: c.Addr, db: c.DB}
 		//注册关闭服务时的优雅关闭
 		server.RegisterShutdownFunc(func() {
@@ -183,12 +183,13 @@ func GetRedisClient(name string) EvaRedis {
 }
 
 type redisHook struct {
-	tracer  *trace.Tracer
-	log     logger.EvaLogger
-	name    string
-	addr    string
-	db      int
-	appName string
+	tracer      *trace.Tracer
+	log         logger.EvaLogger
+	name        string
+	addr        string
+	db          int
+	appName     string
+	traceConfig *config.TraceConfig
 }
 
 func (m *redisHook) BeforeProcess(ctx context.Context, cmd redis.Cmder) (context.Context, error) {
@@ -196,35 +197,39 @@ func (m *redisHook) BeforeProcess(ctx context.Context, cmd redis.Cmder) (context
 	if err != nil {
 		return ctx, err
 	}
-	ctx, span, err := m.tracer.StartRedisClientSpanFromContext(ctx, fmt.Sprintf("redis.%s", cmd.Name()))
-	if err != nil {
-		m.log.Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
+	if m.traceConfig.Redis {
+		ctx, span, err := m.tracer.StartRedisClientSpanFromContext(ctx, fmt.Sprintf("redis.%s", cmd.Name()))
+		if err != nil {
+			m.log.Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
+		}
+		ext.DBStatement.Set(span, cmd.String())
+		ext.DBInstance.Set(span, m.name)
+		ext.PeerAddress.Set(span, m.addr)
+		span.SetTag("DB", m.db)
+		ctx = context.WithValue(ctx, "span", &span)
 	}
-	ext.DBStatement.Set(span, cmd.String())
-	ext.DBInstance.Set(span, m.name)
-	ext.PeerAddress.Set(span, m.addr)
-	span.SetTag("DB", m.db)
-	ctx = context.WithValue(ctx, "span", &span)
 	return ctx, nil
 }
 
 func (m *redisHook) AfterProcess(ctx context.Context, cmd redis.Cmder) (err error) {
-	s := ctx.Value("span")
-	sp, _ := s.(*opentracing.Span)
-	span := *sp
-	defer span.Finish()
-	defer func() {
+	if m.traceConfig.Redis {
+		s := ctx.Value("span")
+		sp, _ := s.(*opentracing.Span)
+		span := *sp
+		defer span.Finish()
+		defer func() {
+			if err != nil {
+				ext.Error.Set(span, true)
+				span.LogFields(log.String("event", "error"))
+				span.LogFields(
+					log.Object("evaError", utils.StructToJson(err)),
+				)
+			}
+		}()
+		err = cmd.Err()
 		if err != nil {
-			ext.Error.Set(span, true)
-			span.LogFields(log.String("event", "error"))
-			span.LogFields(
-				log.Object("evaError", utils.StructToJson(err)),
-			)
+			err = error2.RedisError.SetAppId(m.appName).SetDetail(err.Error())
 		}
-	}()
-	err = cmd.Err()
-	if err != nil {
-		err = error2.RedisError.SetAppId(m.appName).SetDetail(err.Error())
 	}
 	return err
 }

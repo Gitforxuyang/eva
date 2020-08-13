@@ -37,10 +37,11 @@ type Collection struct {
 }
 
 type evaMongo struct {
-	cli   *mongo.Client
-	name  string
-	trace *trace.Tracer
-	log   logger.EvaLogger
+	cli         *mongo.Client
+	name        string
+	trace       *trace.Tracer
+	log         logger.EvaLogger
+	traceConfig *config.TraceConfig
 }
 
 func (m *evaMongo) Database(name string) *Database {
@@ -57,20 +58,28 @@ func StartSpan(ctx context.Context, m *Collection, f string) (context.Context, o
 	if err != nil {
 		return nil, nil, err
 	}
-	ctx, span, err := m.db.mongo.trace.StartMongoClientSpanFromContext(ctx, fmt.Sprintf("mongo.%s", f))
-	if err != nil {
-		m.db.mongo.log.Error(ctx, "mongo startspan err", logger.Fields{
-			"err": err,
-		})
+	if m.db.mongo.traceConfig.Mongo {
+		ctx, span, err := m.db.mongo.trace.StartMongoClientSpanFromContext(ctx, fmt.Sprintf("mongo.%s.%s", m.collectionName, f))
+		if err != nil {
+			m.db.mongo.log.Error(ctx, "mongo startspan err", logger.Fields{
+				"err": err,
+			})
+		}
+		ext.DBStatement.Set(span, f)
+		ext.DBInstance.Set(span, m.db.mongo.name)
+		span.SetTag("database", m.db.dbName)
+		span.SetTag("collection", m.collectionName)
+		return ctx, span, nil
+	} else {
+		return ctx, nil, nil
 	}
-	ext.DBStatement.Set(span, f)
-	ext.DBInstance.Set(span, m.db.mongo.name)
-	span.SetTag("database", m.db.dbName)
-	span.SetTag("collection", m.collectionName)
-	return ctx, span, nil
+
 }
 
 func FinishSpan(span opentracing.Span, err error) {
+	if utils.IsNil(span) {
+		return
+	}
 	if err != nil {
 		ext.Error.Set(span, true)
 		span.LogFields(log.String("event", "error"))
@@ -247,10 +256,11 @@ func GetMongoClient(name string) EvaMongo {
 			cli.Disconnect(context.TODO())
 		})
 		client[name] = &evaMongo{
-			cli:   cli,
-			name:  name,
-			trace: trace.GetTracer(),
-			log:   logger.GetLogger(),
+			cli:         cli,
+			name:        name,
+			trace:       trace.GetTracer(),
+			log:         logger.GetLogger(),
+			traceConfig: config.GetConfig().GetTraceConfig(),
 		}
 	}
 	return client[name]

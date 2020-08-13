@@ -5,6 +5,7 @@ import (
 	"github.com/Gitforxuyang/eva/util/utils"
 	"github.com/spf13/viper"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -12,8 +13,14 @@ import (
 type ChangeNotify func(config map[string]interface{})
 
 type TraceConfig struct {
-	Endpoint string
-	Ratio    float64
+	Endpoint   string
+	Ratio      float64
+	Redis      bool //redis是否链路
+	Mongo      bool //mongo是否链路
+	GRpcClient bool //grpc client是否链路
+	//GRpcServer bool //grpc server是否链路
+	HttpClient bool //http client是否链路
+	Log        bool //链路时是否输出更详细的log
 }
 
 type GRpcClientConfig struct {
@@ -59,10 +66,12 @@ type EvaConfig struct {
 	log               *LogConfig
 	redis             map[string]*RedisConfig
 	mongo             map[string]*MongoConfig
+	trace             *TraceConfig
 }
 
 var (
-	config *EvaConfig
+	config     *EvaConfig
+	configOnce sync.Once
 )
 
 func Init() {
@@ -73,6 +82,7 @@ func Init() {
 		config.grpc = make(map[string]*GRpcClientConfig)
 		config.redis = make(map[string]*RedisConfig)
 		config.mongo = make(map[string]*MongoConfig)
+		config.trace = &TraceConfig{}
 		config.log = &LogConfig{Server: false, GRpcClient: false, HttpClient: false, Level: "INFO"}
 		v := viper.New()
 		v.SetConfigName("config.default")
@@ -108,13 +118,18 @@ func Init() {
 		utils.Must(err)
 		err = v.UnmarshalKey("mongo", &config.mongo)
 		utils.Must(err)
+		if utils.IsNil(v.Get("trace")) {
+			panic("trace设置不能为空")
+		}
+		err = v.UnmarshalKey("trace", &config.trace)
+		utils.Must(err)
 	}
 }
 
 func GetConfig() *EvaConfig {
-	if config == nil {
+	configOnce.Do(func() {
 		Init()
-	}
+	})
 	return config
 }
 
@@ -137,14 +152,8 @@ func (m *EvaConfig) GetENV() string {
 	return m.env
 }
 
-func (m *EvaConfig) GetTraceConfig() TraceConfig {
-	c := TraceConfig{}
-	if utils.IsNil(m.v.Get("trace")) {
-		panic("trace设置不能为空")
-	}
-	err := m.v.UnmarshalKey("trace", &c)
-	utils.Must(err)
-	return c
+func (m *EvaConfig) GetTraceConfig() *TraceConfig {
+	return m.trace
 }
 
 func (m *EvaConfig) GetGRpc(app string) *GRpcClientConfig {

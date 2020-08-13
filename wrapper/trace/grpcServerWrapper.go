@@ -2,6 +2,7 @@ package trace
 
 import (
 	"context"
+	"github.com/Gitforxuyang/eva/config"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
 	"github.com/Gitforxuyang/eva/util/trace"
@@ -12,6 +13,7 @@ import (
 )
 
 func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
+	conf := config.GetConfig().GetTraceConfig()
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		ctx, span, err := tracer.StartGRpcServerSpanFromContext(ctx, info.FullMethod)
 		if err != nil {
@@ -19,10 +21,12 @@ func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req in
 		}
 		defer span.Finish()
 		resp, err = handler(ctx, req)
-		span.LogFields(
-			log.Object("req", utils.StructToJson(req)),
-			log.Object("resp", utils.StructToJson(resp)),
-		)
+		if conf.Log {
+			span.LogFields(
+				log.Object("req", utils.StructToJson(req)),
+				log.Object("resp", utils.StructToJson(resp)),
+			)
+		}
 		if err != nil {
 			ext.Error.Set(span, true)
 			span.LogFields(log.String("event", "error"))

@@ -2,7 +2,6 @@ package catch
 
 import (
 	"context"
-	"fmt"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
 	"google.golang.org/grpc"
@@ -26,7 +25,6 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 		}
 		resp, err = handler(ctx, req)
 		if err != nil {
-			fmt.Println(err)
 			evaError := error2.FromError(err)
 			return resp, error2.EncodeStatus(evaError).Err()
 		}

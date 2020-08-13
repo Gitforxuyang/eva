@@ -92,33 +92,37 @@ func GetHttpClient(name string) EvaHttp {
 }
 func (m *evaHttp) DoRpc(ctx context.Context, uri string, method HttpMethod, headers Headers, data map[string]interface{}) (resp map[string]interface{}, err error) {
 	start := time.Now()
-	ctx, span, err := m.tracer.StartHttpClientSpanFromContext(ctx, fmt.Sprintf("%s_%s", uri, method))
-	if err != nil {
-		m.log.Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
-	}
 	var statusCode int
-	defer span.Finish()
-	defer func() {
-		span.LogFields(
-			log.Object("req", utils.StructToJson(data)),
-			log.Object("resp", utils.StructToJson(resp)),
-			log.Object("headers", utils.StructToJson(headers)),
-			//log.String("uri", uri),
-			//log.String("addr", m.addr),
-			//log.String("method", method.String()),
-			log.String("http_type", "DoRpc"),
-		)
-		ext.HTTPMethod.Set(span, method.String())
-		ext.HTTPUrl.Set(span, fmt.Sprintf("%s%s", m.addr, uri))
-		ext.HTTPStatusCode.Set(span, uint16(statusCode))
+	if m.conf.GetTraceConfig().HttpClient {
+		ctx, span, err := m.tracer.StartHttpClientSpanFromContext(ctx, fmt.Sprintf("%s_%s", uri, method))
 		if err != nil {
-			ext.Error.Set(span, true)
-			span.LogFields(log.String("event", "error"))
-			span.LogFields(
-				log.Object("evaError", utils.StructToJson(err)),
-			)
+			m.log.Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
 		}
-	}()
+		defer span.Finish()
+		defer func() {
+			if m.conf.GetTraceConfig().Log {
+				span.LogFields(
+					log.Object("req", utils.StructToJson(data)),
+					log.Object("resp", utils.StructToJson(resp)),
+					log.Object("headers", utils.StructToJson(headers)),
+					//log.String("uri", uri),
+					//log.String("addr", m.addr),
+					//log.String("method", method.String()),
+					log.String("http_type", "DoRpc"),
+				)
+			}
+			ext.HTTPMethod.Set(span, method.String())
+			ext.HTTPUrl.Set(span, fmt.Sprintf("%s%s", m.addr, uri))
+			ext.HTTPStatusCode.Set(span, uint16(statusCode))
+			if err != nil {
+				ext.Error.Set(span, true)
+				span.LogFields(log.String("event", "error"))
+				span.LogFields(
+					log.Object("evaError", utils.StructToJson(err)),
+				)
+			}
+		}()
+	}
 
 	defer func() {
 		if m.conf.GetLogConfig().HttpClient {
@@ -161,32 +165,36 @@ func (m *evaHttp) DoRpc(ctx context.Context, uri string, method HttpMethod, head
 
 func (m *evaHttp) Do(ctx context.Context, uri string, method HttpMethod, headers Headers, data map[string]interface{}) (bytes []byte, err error) {
 	start := time.Now()
-	ctx, span, err := m.tracer.StartHttpClientSpanFromContext(ctx, fmt.Sprintf("%s_%s", uri, method))
-	if err != nil {
-		m.log.Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
-	}
 	var statusCode int
-	defer span.Finish()
-	defer func() {
-		span.LogFields(
-			log.Object("req", utils.StructToJson(data)),
-			log.Object("resp", string(bytes)),
-			log.Object("headers", utils.StructToJson(headers)),
-			//log.String("uri", uri),
-			log.String("http_type", "Do"),
-			//log.String("addr", m.addr),
-		)
-		ext.HTTPMethod.Set(span, method.String())
-		ext.HTTPUrl.Set(span, fmt.Sprintf("%s%s", m.addr, uri))
-		ext.HTTPStatusCode.Set(span, uint16(statusCode))
+	if m.conf.GetTraceConfig().HttpClient {
+		ctx, span, err := m.tracer.StartHttpClientSpanFromContext(ctx, fmt.Sprintf("%s_%s", uri, method))
 		if err != nil {
-			ext.Error.Set(span, true)
-			span.LogFields(log.String("event", "error"))
-			span.LogFields(
-				log.Object("evaError", utils.StructToJson(err)),
-			)
+			m.log.Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
 		}
-	}()
+		defer span.Finish()
+		defer func() {
+			if m.conf.GetTraceConfig().Log {
+				span.LogFields(
+					log.Object("req", utils.StructToJson(data)),
+					log.Object("resp", string(bytes)),
+					log.Object("headers", utils.StructToJson(headers)),
+					//log.String("uri", uri),
+					log.String("http_type", "Do"),
+					//log.String("addr", m.addr),
+				)
+			}
+			ext.HTTPMethod.Set(span, method.String())
+			ext.HTTPUrl.Set(span, fmt.Sprintf("%s%s", m.addr, uri))
+			ext.HTTPStatusCode.Set(span, uint16(statusCode))
+			if err != nil {
+				ext.Error.Set(span, true)
+				span.LogFields(log.String("event", "error"))
+				span.LogFields(
+					log.Object("evaError", utils.StructToJson(err)),
+				)
+			}
+		}()
+	}
 
 	defer func() {
 		if m.conf.GetLogConfig().HttpClient {
