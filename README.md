@@ -15,6 +15,6 @@
 2.client的selector改成读取etcd 自己做服务注册、发现、负载
 3.其它plugin
 4.broker
-5.api server自动注册并发现服务
+5.api server自动注册并发现服务 
 6.单元测试
 ```

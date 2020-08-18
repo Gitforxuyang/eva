@@ -12,6 +12,7 @@ import (
 	"github.com/Gitforxuyang/eva/wrapper/trace"
 	grpc_middleware "github.com/grpc-ecosystem/go-grpc-middleware"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/reflection"
 	"net"
 	"os"
 	"os/signal"
@@ -49,6 +50,8 @@ func Init() {
 		//MaxConnectionAge:time.Second*20,
 		//}),
 	)
+	//注册反射，用来个 api server做反射
+	reflection.Register(grpcServer)
 	//hello.RegisterSayHelloServiceServer(grpcServer, &service.HelloServiceServer{})
 
 }
@@ -78,6 +81,7 @@ func Run() {
 	for _, v := range shutdownFunc {
 		v()
 	}
+	logger.GetLogger().Info(context.TODO(), "server stop", logger.Fields{})
 }
 
 func RegisterShutdownFunc(shutdown RegisterShutdown) {

@@ -14,6 +14,7 @@ func main() {
 	rdb := redis.GetRedisClient("node")
 	mongo := mongo2.GetMongoClient("node")
 	server.RegisterGRpcService(func(server *grpc.Server) {
+		//reflection.Register(server)
 		hello.RegisterSayHelloServiceServer(server, service.NewHelloServiceServer(rdb, mongo))
 	})
 	//client:=client2.GetGRpcSayHelloServiceClient()

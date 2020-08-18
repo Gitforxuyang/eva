@@ -2,48 +2,6 @@
 {
   "name": "eva-example",
   "port": 50001,
-  "mongo": {
-    "node": {
-      "url": "mongodb://192.168.3.3:27017/demo",
-      "maxPoolSize": 20,
-      "minPoolSize": 20
-    }
-  },
-  "redis": {
-    "node": {
-      "addr": "192.168.3.3:6379",
-      "password": "",
-      "DB": 0,
-      "PoolSize": 20,
-      "MinIdleConns": 20,
-      "DialTimeout": 5,
-      "ReadTimeout": 3,
-      "WriteTimeout": 3
-    }
-  },
-  "trace": {
-    "endpoint": "http://192.168.3.23:14268/api/traces",
-    "ratio": 1,
-    "redis": true,
-    "mongo": true,
-    "log": true,
-    "grpcClient": true,
-    "httpClient": true
-  },
-  "grpc": {
-    "SayHelloService": {
-      "endpoint": ":50001",
-      "timeout": 5,
-      "mode": "dns"
-    }
-  },
-  "http": {
-    "demo-svc": {
-      "endpoint": "http://127.0.0.1:8080",
-      "timeout": 5,
-      "maxConn": 10
-    }
-  },
   "log": {
     "server": true,
     "grpcClient": true,
