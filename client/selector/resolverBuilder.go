@@ -3,40 +3,24 @@ package selector
 import (
 	"github.com/Gitforxuyang/eva/client/selector/dns"
 	"github.com/Gitforxuyang/eva/client/selector/etcd"
-	"google.golang.org/grpc/resolver"
+	"google.golang.org/grpc/naming"
 )
 
-type customResolver struct {
-	name string
+type CustomResolver struct {
+	scheme string
 }
 
-func (m *customResolver) Build(target resolver.Target, cc resolver.ClientConn, opts resolver.BuildOptions) (resolver.Resolver, error) {
-	var r CustomResolver
-	switch m.name {
-	case "etcd":
-		r = etcd.NewEtcdResolver(target, cc)
+func (m *CustomResolver) GetResolver(target string) naming.Resolver {
+	switch m.scheme {
 	case "dns":
-		r = dns.NewDNSResolver(target, cc)
+		return dns.NewResolver(target)
+	case "etcd":
+		return etcd.NewResolver(target)
 	default:
-		panic("不存在的resover类型")
+		panic("不存在的协议")
 	}
-	err := r.Run()
-	if err != nil {
-		panic(err)
-	}
-	return r, nil
 }
 
-func (m *customResolver) Scheme() string {
-	return m.name
-}
-
-func NewCustomResolverBuilder(name string) resolver.Builder {
-	return &customResolver{name: name}
-}
-
-type CustomResolver interface {
-	ResolveNow(options resolver.ResolveNowOptions)
-	Close()
-	Run() error
+func NewCustomResolverBuilder(scheme string) *CustomResolver {
+	return &CustomResolver{scheme: scheme}
 }

@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/fatih/structs"
+	"github.com/google/uuid"
 	"reflect"
+	"strings"
 )
 
 func StructToMap(v interface{}) map[string]interface{} {
@@ -61,4 +63,16 @@ func NotNil(v interface{}, name string) {
 	if IsNil(v) {
 		panic(fmt.Sprintf("%s不能为Nil", name))
 	}
+}
+
+func GetUUIDStr() string {
+	uuid := uuid.New()
+	return uuid.String()
+}
+
+//获取没有 破折号的 UUID
+func GetNoDashUUIDStr() string {
+	uuid := uuid.New()
+	str := strings.ReplaceAll(uuid.String(), "-", "")
+	return str
 }

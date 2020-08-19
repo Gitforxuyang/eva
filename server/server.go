@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"github.com/Gitforxuyang/eva/config"
+	"github.com/Gitforxuyang/eva/registory/etcd"
 	"github.com/Gitforxuyang/eva/util/logger"
 	trace2 "github.com/Gitforxuyang/eva/util/trace"
 	"github.com/Gitforxuyang/eva/util/utils"
@@ -39,6 +40,7 @@ func Init() {
 	logger.Init(conf.GetName())
 	trace2.Init(fmt.Sprintf("%s_%s", conf.GetName(), conf.GetENV()),
 		conf.GetTraceConfig().Endpoint, conf.GetTraceConfig().Ratio)
+	etcd.Init()
 	grpcServer = grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			trace.NewGRpcServerWrapper(trace2.GetTracer()),
@@ -70,12 +72,16 @@ func Run() {
 		"server": config.GetConfig().GetName(),
 		"env":    config.GetConfig().GetENV(),
 	})
+	conf := config.GetConfig()
+	id := utils.GetUUIDStr()
+	etcd.Registry(conf.GetName(), fmt.Sprintf("%s:%d", utils.GetLocalIp(), conf.GetPort()), id)
 	c := make(chan os.Signal)
 	signal.Notify(c, syscall.SIGTERM, syscall.SIGKILL)
 	s := <-c
 	logger.GetLogger().Info(context.TODO(), "signal", logger.Fields{
 		"signal": s.String(),
 	})
+	etcd.UnRegistry(conf.GetName(), id)
 	grpcServer.GracefulStop()
 	//做一些资源关闭动作
 	for _, v := range shutdownFunc {

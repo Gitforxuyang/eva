@@ -30,9 +30,9 @@
   },
   "grpc": {
     "SayHelloService": {
-      "endpoint": ":50001",
+      "endpoint": "eva-example",
       "timeout": 5,
-      "mode": "dns"
+      "mode": "etcd"
     }
   },
   "http": {
@@ -41,5 +41,6 @@
       "timeout": 5,
       "maxConn": 10
     }
-  }
+  },
+  "etcd": ["localhost:2379"]
 }

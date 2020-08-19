@@ -1,8 +1,11 @@
 package config
 
 import (
+	"bytes"
+	"context"
 	"fmt"
 	"github.com/Gitforxuyang/eva/util/utils"
+	"github.com/coreos/etcd/clientv3"
 	"github.com/spf13/viper"
 	"strings"
 	"sync"
@@ -67,6 +70,8 @@ type EvaConfig struct {
 	redis             map[string]*RedisConfig
 	mongo             map[string]*MongoConfig
 	trace             *TraceConfig
+	etcd              []string
+	dynamic           map[string]interface{}
 }
 
 var (
@@ -84,6 +89,8 @@ func Init() {
 		config.mongo = make(map[string]*MongoConfig)
 		config.trace = &TraceConfig{}
 		config.log = &LogConfig{Server: false, GRpcClient: false, HttpClient: false, Level: "INFO"}
+		config.etcd = make([]string, 0, 3)
+		config.dynamic = make(map[string]interface{})
 		v := viper.New()
 		v.SetConfigName("config.default")
 		v.AddConfigPath("./conf")
@@ -103,6 +110,27 @@ func Init() {
 		if config.name == "" {
 			panic("配置文件中name不能为空")
 		}
+		err = v.UnmarshalKey("etcd", &config.etcd)
+		utils.Must(err)
+
+		client, err := clientv3.New(clientv3.Config{
+			Endpoints:   config.etcd,
+			DialTimeout: time.Second * 3,
+		})
+		utils.Must(err)
+		resp, err := client.Get(context.TODO(), fmt.Sprintf("%s%s", ETCD_CONFIG_PREFIX, "global"))
+		utils.Must(err)
+		if len(resp.Kvs) == 0 {
+			panic("global未找到")
+		}
+		v.MergeConfig(bytes.NewBuffer(resp.Kvs[0].Value))
+		resp, err = client.Get(context.TODO(), fmt.Sprintf("%s%s", ETCD_CONFIG_PREFIX, config.name))
+		utils.Must(err)
+		if len(resp.Kvs) == 0 {
+			panic(fmt.Sprintf("%s未找到", config.name))
+		}
+		v.MergeConfig(bytes.NewBuffer(resp.Kvs[0].Value))
+
 		config.port = v.GetInt32("port")
 		if config.port == 0 {
 			panic("配置文件中port不能为空")
@@ -123,6 +151,9 @@ func Init() {
 		}
 		err = v.UnmarshalKey("trace", &config.trace)
 		utils.Must(err)
+		err = v.UnmarshalKey("dynamic", &config.dynamic)
+		utils.Must(err)
+		watch(client)
 	}
 }
 
@@ -191,4 +222,15 @@ func (m *EvaConfig) GetMongo(name string) *MongoConfig {
 		panic(fmt.Sprintf("mongo：%s配置未找到", name))
 	}
 	return c
+}
+
+func (m *EvaConfig) GetEtcd() []string {
+	if m.etcd == nil {
+		panic(fmt.Sprintf("etcd配置未找到"))
+	}
+	return m.etcd
+}
+
+func GetDynamic() map[string]interface{} {
+	return config.dynamic
 }
