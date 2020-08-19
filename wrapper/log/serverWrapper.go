@@ -19,12 +19,15 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 		defer func() {
 			emap := map[string]interface{}{}
 			if err != nil {
-				emap = utils.StructToMap(error2.DecodeStatus(err))
+				emap, _ = utils.JsonToMap(utils.StructToJson(error2.DecodeStatus(err)))
 			}
+			r, _ := utils.JsonToMap(utils.StructToJson(req))
+			res, _ := utils.JsonToMap(utils.StructToJson(resp))
+			//errobject, _ := utils.JsonToMap(utils.StructToJson(emap))
 			if config.GetLogConfig().Server {
 				log.Info(ctx, "收到的请求", logger.Fields{
-					"req":     utils.StructToMap(req),
-					"resp":    utils.StructToMap(resp),
+					"req":     r,
+					"resp":    res,
 					"method":  info.FullMethod,
 					"useTime": fmt.Sprintf("%s", time.Now().Sub(start).String()),
 					"err":     emap,

@@ -35,11 +35,11 @@ var (
 )
 
 type EvaError struct {
-	AppId   string     //错误发生的服务
-	Code    int32      //错误码 业务的code
-	Message string     //错误消息
-	Detail  string     //更详细的错误消息 不对外展示的
-	Status  codes.Code //grpc的错误码
+	AppId   string     `json:"appId"`   //错误发生的服务
+	Code    int32      `json:"code"`    //错误码 业务的code
+	Message string     `json:"message"` //错误消息
+	Detail  string     `json:"detail"`  //更详细的错误消息 不对外展示的
+	Status  codes.Code `json:"status"`  //grpc的错误码
 }
 
 func (m EvaError) SetDetail(detail string) EvaError {

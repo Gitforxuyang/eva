@@ -18,6 +18,7 @@ import (
 	"os"
 	"os/signal"
 	"syscall"
+	"time"
 )
 
 type RegisterService func(server *grpc.Server)
@@ -67,6 +68,7 @@ func Run() {
 		err := grpcServer.Serve(listen)
 		utils.Must(err)
 	}()
+	time.Sleep(time.Millisecond * 200)
 	logger.GetLogger().Info(context.TODO(), "server started", logger.Fields{
 		"port":   config.GetConfig().GetPort(),
 		"server": config.GetConfig().GetName(),

@@ -20,12 +20,15 @@ func NewClientWrapper() func(ctx context.Context, method string, req, reply inte
 		defer func() {
 			emap := map[string]interface{}{}
 			if err != nil {
-				emap = utils.StructToMap(error2.DecodeStatus(err))
+				emap, _ = utils.JsonToMap(utils.StructToJson(error2.DecodeStatus(err)))
 			}
+			r, _ := utils.JsonToMap(utils.StructToJson(req))
+			res, _ := utils.JsonToMap(utils.StructToJson(reply))
+			//errobject, _ := utils.JsonToMap(utils.StructToJson(emap))
 			if conf.GetLogConfig().GRpcClient {
 				log.Info(ctx, "发起的请求", logger.Fields{
-					"req":     utils.StructToMap(req),
-					"resp":    utils.StructToMap(reply),
+					"req":     r,
+					"resp":    res,
 					"method":  method,
 					"useTime": fmt.Sprintf("%s", time.Now().Sub(start).String()),
 					"err":     emap,
