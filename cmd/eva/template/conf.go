@@ -43,7 +43,7 @@ const (
     "ratio": 1
   },
   "grpc": {
-    "SayHelloService": {
+    "SayHello": {
       "endpoint": ":50001",
       "timeout": 5,
       "mode": "dns"

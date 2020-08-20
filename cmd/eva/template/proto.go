@@ -15,7 +15,7 @@ package {{.Package}};
 
 message Nil {
 }
-service {{.Name}}Service {
+service {{.Name}} {
     rpc Ping (Nil) returns (Nil);
 }
 	`

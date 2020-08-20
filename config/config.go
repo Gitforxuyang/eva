@@ -193,7 +193,9 @@ func (m *EvaConfig) GetTraceConfig() *TraceConfig {
 func (m *EvaConfig) GetGRpc(app string) *GRpcClientConfig {
 	c := m.grpc[strings.ToLower(app)]
 	if c == nil {
-		panic(fmt.Sprintf("grpc：%s配置未找到", app))
+		//panic(fmt.Sprintf("grpc：%s配置未找到", app))
+		//如果没有配置，则默认直接用appId来访问。
+		return &GRpcClientConfig{Mode: "etcd", Endpoint: app, Timeout: 5}
 	}
 	return c
 }
