@@ -7,6 +7,9 @@ cmd组件
 |protoc-gen-eva|protobuf plugin，用以生成proto代码||
 |eva|脚手架工具 用来生成代码||
 
+要求:
+protoc-gen-go 1.3.2
+
 
 待做：
 ```

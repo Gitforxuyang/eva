@@ -22,7 +22,7 @@ module {{.Name}}
 go 1.12
 
 require (
-	github.com/Gitforxuyang/eva
+	github.com/Gitforxuyang/eva v1.1.3
 	github.com/golang/protobuf v1.4.2
 	google.golang.org/grpc v1.26.0
 	google.golang.org/protobuf v1.25.0
@@ -35,6 +35,7 @@ replace google.golang.org/grpc => google.golang.org/grpc v1.26.0
 package main
 
 import (
+	"{{.Name}}/conf"
 	"{{.Name}}/handler"
 	"{{.Name}}/proto/{{.Name}}"
 	"github.com/Gitforxuyang/eva/server"
@@ -45,7 +46,7 @@ func main(){
 	server.Init()
 	conf.Registry()
 	server.RegisterGRpcService(func(server *grpc.Server) {
-		{{.Name}}.Register{{.Service}}ServiceServer(server,&handler.HandlerService{})
+		{{.Name}}.Register{{.Service}}Server(server,&handler.HandlerService{})
 	})
 	server.Run()
 }
