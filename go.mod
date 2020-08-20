@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	cloud.google.com/go/bigquery v1.4.0 // indirect
+	github.com/Gitforxuyang/protoc-gen-eva v0.0.0-20200810163703-5b3efeb163a7
 	github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6 // indirect
 	github.com/benbjohnson/clock v1.0.3 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
@@ -17,7 +18,7 @@ require (
 	github.com/fatih/structs v1.1.0
 	github.com/go-redis/redis/v8 v8.0.0-beta.5
 	github.com/golang/mock v1.4.4 // indirect
-	github.com/golang/protobuf v1.3.2
+	github.com/golang/protobuf v1.4.2
 	github.com/google/go-cmp v0.5.1 // indirect
 	github.com/google/martian/v3 v3.0.0 // indirect
 	github.com/google/pprof v0.0.0-20200708004538-1a94d8640e99 // indirect
@@ -51,7 +52,7 @@ require (
 	golang.org/x/xerrors v0.0.0-20200804184101-5ec99f83aff1 // indirect
 	google.golang.org/api v0.15.1 // indirect
 	google.golang.org/appengine v1.6.6 // indirect
-	google.golang.org/grpc v1.30.0
+	google.golang.org/grpc v1.31.0
 	gopkg.in/check.v1 v1.0.0-20200227125254-8fa46927fb4f // indirect
 	gopkg.in/yaml.v3 v3.0.0-20200615113413-eeeca48fe776 // indirect
 	honnef.co/go/tools v0.0.1-2020.1.4 // indirect
