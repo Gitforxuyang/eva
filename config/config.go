@@ -110,11 +110,11 @@ func Init() {
 		if config.name == "" {
 			panic("配置文件中name不能为空")
 		}
+		err = v.UnmarshalKey("etcd", &config.etcd)
+		utils.Must(err)
 		if len(config.etcd) == 0 {
 			panic("配置文件中etcd不能为空")
 		}
-		err = v.UnmarshalKey("etcd", &config.etcd)
-		utils.Must(err)
 
 		client, err := clientv3.New(clientv3.Config{
 			Endpoints:   config.etcd,
