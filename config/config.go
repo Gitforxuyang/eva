@@ -231,6 +231,6 @@ func (m *EvaConfig) GetEtcd() []string {
 	return m.etcd
 }
 
-func GetDynamic() map[string]interface{} {
-	return config.dynamic
-}
+//func GetDynamic() map[string]interface{} {
+//	return config.dynamic
+//}
