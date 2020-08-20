@@ -4,6 +4,7 @@ go 1.12
 
 require (
 	cloud.google.com/go/bigquery v1.4.0 // indirect
+	github.com/Gitforxuyang/evaCli v0.0.0-20200813033802-19f55b230ccf // indirect
 	github.com/Gitforxuyang/protoc-gen-eva v0.0.0-20200810163703-5b3efeb163a7
 	github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6 // indirect
 	github.com/benbjohnson/clock v1.0.3 // indirect

@@ -20,6 +20,8 @@ dmitri.shuralyov.com/gpu/mtl v0.0.0-20190408044501-666a987793e9/go.mod h1:H6x//7
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/BurntSushi/xgb v0.0.0-20160522181843-27f122750802/go.mod h1:IVnqGOEym/WlBOVXweHU+Q+/VP0lqqI8lqeDx9IjBqo=
 github.com/DataDog/sketches-go v0.0.0-20190923095040-43f19ad77ff7/go.mod h1:Q5DbzQ+3AkgGwymQO7aZFNP7ns2lZKGtvRBzRXfdi60=
+github.com/Gitforxuyang/evaCli v0.0.0-20200813033802-19f55b230ccf h1:SskSHN5spdAfvRjZC0YxuVFTOeXzUBp3C1fea2QjC1s=
+github.com/Gitforxuyang/evaCli v0.0.0-20200813033802-19f55b230ccf/go.mod h1:z7GKSNIeKr5NnMEfb789c8+cU4/x0lDPX+wIi263R/8=
 github.com/Gitforxuyang/protoc-gen-eva v0.0.0-20200810163703-5b3efeb163a7 h1:72upXzj89kQbX4Xo5AUFT63gkib7Z6dnPQ3X1wbb2Yo=
 github.com/Gitforxuyang/protoc-gen-eva v0.0.0-20200810163703-5b3efeb163a7/go.mod h1:AV4tKXxuXpOfBXYc+JoxhU5IudTWIvlZqScjxyrBUJM=
 github.com/OneOfOne/xxhash v1.2.2/go.mod h1:HSdplMjZKSmBqAxg5vPj2TmRDmfkzw+cTzAElWljhcU=

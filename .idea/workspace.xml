@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="741ed066-aa2d-43a3-ae58-99b9b9dda27d" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/cmd/protoc-gen-eva/.idea/protoc-gen-xmicro.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.mod" beforeDir="false" afterPath="$PROJECT_DIR$/go.mod" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/go.sum" beforeDir="false" afterPath="$PROJECT_DIR$/go.sum" afterDir="false" />
     </list>
@@ -16,22 +16,13 @@
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
       <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/cmd/protoc-gen-eva/README.md">
+        <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="180">
-                <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+              <first_editor relative-caret-position="90">
+                <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
               </first_editor>
               <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/cmd/protoc-gen-eva/Makefile">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="165">
-              <caret line="11" column="61" lean-forward="true" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="61" />
             </state>
           </provider>
         </entry>
@@ -71,6 +62,7 @@
       <find>prevKV</find>
       <find>WithPrevKV gets the previous key-value pair before the event happens. If the previous KV is already compacted,</find>
       <find>suffix</find>
+      <find>tmp</find>
     </findStrings>
   </component>
   <component name="GOROOT" path="/usr/local/go" />
@@ -83,9 +75,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/util/logger.go" />
-        <option value="$PROJECT_DIR$/util/utils/time.go" />
-        <option value="$PROJECT_DIR$/util/utils/trace.go" />
         <option value="$PROJECT_DIR$/service/server.go" />
         <option value="$PROJECT_DIR$/main.go" />
         <option value="$PROJECT_DIR$/config/config_test.go" />
@@ -121,7 +110,6 @@
         <option value="$PROJECT_DIR$/registory/etcd/service.go" />
         <option value="$PROJECT_DIR$/config/config.go" />
         <option value="$PROJECT_DIR$/config/etcd.go" />
-        <option value="$PROJECT_DIR$/README.md" />
         <option value="$PROJECT_DIR$/server/server.go" />
         <option value="$PROJECT_DIR$/util/logger/logger.go" />
         <option value="$PROJECT_DIR$/wrapper/log/clientWrapper.go" />
@@ -134,6 +122,10 @@
         <option value="$PROJECT_DIR$/cmd/protoc-gen-eva/main.go" />
         <option value="$PROJECT_DIR$/cmd/protoc-gen-eva/examples/hello.eva.go" />
         <option value="$PROJECT_DIR$/cmd/protoc-gen-eva/README.md" />
+        <option value="$PROJECT_DIR$/cmd/eva/README.md" />
+        <option value="$PROJECT_DIR$/cmd/eva/template/other.go" />
+        <option value="$PROJECT_DIR$/cmd/eva/main.go" />
+        <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
   </component>
@@ -155,38 +147,6 @@
               <item name="eva" type="b2602c69:ProjectViewProjectNode" />
               <item name="eva" type="462c0819:PsiDirectoryNode" />
             </path>
-            <path>
-              <item name="eva" type="b2602c69:ProjectViewProjectNode" />
-              <item name="eva" type="462c0819:PsiDirectoryNode" />
-              <item name="cmd" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="eva" type="b2602c69:ProjectViewProjectNode" />
-              <item name="eva" type="462c0819:PsiDirectoryNode" />
-              <item name="cmd" type="462c0819:PsiDirectoryNode" />
-              <item name="protoc-gen-eva" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="eva" type="b2602c69:ProjectViewProjectNode" />
-              <item name="eva" type="462c0819:PsiDirectoryNode" />
-              <item name="cmd" type="462c0819:PsiDirectoryNode" />
-              <item name="protoc-gen-eva" type="462c0819:PsiDirectoryNode" />
-              <item name="eva" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="eva" type="b2602c69:ProjectViewProjectNode" />
-              <item name="eva" type="462c0819:PsiDirectoryNode" />
-              <item name="cmd" type="462c0819:PsiDirectoryNode" />
-              <item name="protoc-gen-eva" type="462c0819:PsiDirectoryNode" />
-              <item name="examples" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="eva" type="b2602c69:ProjectViewProjectNode" />
-              <item name="eva" type="462c0819:PsiDirectoryNode" />
-              <item name="cmd" type="462c0819:PsiDirectoryNode" />
-              <item name="protoc-gen-eva" type="462c0819:PsiDirectoryNode" />
-              <item name="generator" type="462c0819:PsiDirectoryNode" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -204,7 +164,7 @@
     <property name="go.gopath.indexing.explicitly.defined" value="true" />
     <property name="go.import.settings.migrated" value="true" />
     <property name="go.vendoring.notification.had.been.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmd/protoc-gen-eva" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/cmd/eva" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="settings.editor.selected.configurable" value="watcher.settings" />
@@ -216,11 +176,11 @@
       <recent name="$PROJECT_DIR$/util/logger" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/cmd/eva" />
       <recent name="$PROJECT_DIR$/cmd/protoc-gen-eva" />
       <recent name="$PROJECT_DIR$/examples" />
       <recent name="$PROJECT_DIR$/config/conf" />
       <recent name="$PROJECT_DIR$/wrapper/trace" />
-      <recent name="$PROJECT_DIR$/wrapper/catch" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -330,7 +290,7 @@
       <window_info id="Structure" order="1" side_tool="true" weight="0.25" />
       <window_info id="Favorites" order="2" side_tool="true" />
       <window_info anchor="bottom" id="Message" order="0" />
-      <window_info anchor="bottom" id="Find" order="1" />
+      <window_info anchor="bottom" id="Find" order="1" weight="0.3290938" />
       <window_info anchor="bottom" id="Run" order="2" weight="0.3290938" />
       <window_info anchor="bottom" id="Debug" order="3" weight="0.3863275" />
       <window_info anchor="bottom" id="Cvs" order="4" weight="0.25" />
@@ -339,7 +299,7 @@
       <window_info anchor="bottom" id="Docker" order="7" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="8" />
       <window_info anchor="bottom" id="Version Control" order="9" />
-      <window_info anchor="bottom" id="Terminal" order="10" visible="true" weight="0.36248013" />
+      <window_info anchor="bottom" id="Terminal" order="10" weight="0.36248013" />
       <window_info anchor="bottom" id="Event Log" order="11" side_tool="true" />
       <window_info anchor="right" id="Commander" internal_type="SLIDING" order="0" type="SLIDING" weight="0.4" />
       <window_info anchor="right" id="Ant Build" order="1" weight="0.25" />
@@ -481,29 +441,6 @@
     </watches-manager>
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/coreos/etcd@v3.3.22+incompatible/clientv3/example_kv_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="267" column="22" lean-forward="true" selection-start-line="267" selection-start-column="22" selection-end-line="267" selection-end-column="22" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/coreos/etcd@v3.3.22+incompatible/clientv3/example_lease_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-404" />
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/coreos/etcd@v3.3.22+incompatible/clientv3/example_maintenence_test.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/coreos/etcd@v3.3.22+incompatible/clientv3/example_auth_test.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$USER_HOME$/go/pkg/mod/github.com/coreos/etcd@v3.3.22+incompatible/clientv3/ctx_test.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-621" />
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/go/pkg/mod/github.com/coreos/etcd@v3.3.22+incompatible/clientv3/client_test.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="219">
@@ -539,16 +476,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="111">
           <caret line="497" column="20" selection-start-line="497" selection-start-column="20" selection-end-line="497" selection-end-column="20" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/examples/main.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="13" column="18" lean-forward="true" selection-start-line="13" selection-start-column="18" selection-end-line="13" selection-end-column="18" />
-          <folding>
-            <element signature="e#14#283#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -660,16 +587,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor relative-caret-position="156">
-            <caret line="11" column="3" lean-forward="true" selection-start-line="11" selection-start-column="3" selection-end-line="11" selection-end-column="3" />
-          </first_editor>
-          <second_editor />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/wrapper/log/clientWrapper.go">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="182">
@@ -709,13 +626,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="267">
           <caret line="27" column="32" lean-forward="true" selection-start-line="27" selection-start-column="32" selection-end-line="27" selection-end-column="32" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/examples/client.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="135">
-          <caret line="22" column="48" selection-start-line="22" selection-start-column="48" selection-end-line="22" selection-end-column="48" />
         </state>
       </provider>
     </entry>
@@ -817,18 +727,82 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/cmd/protoc-gen-eva/Makefile">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="165">
-          <caret line="11" column="61" lean-forward="true" selection-start-line="11" selection-start-column="4" selection-end-line="11" selection-end-column="61" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/cmd/protoc-gen-eva/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
           <first_editor relative-caret-position="180">
             <caret line="12" lean-forward="true" selection-start-line="12" selection-end-line="12" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmd/protoc-gen-eva/Makefile">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="12" column="13" lean-forward="true" selection-start-line="12" selection-start-column="13" selection-end-line="12" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmd/eva/template/other.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="181">
+          <caret line="156" column="1" lean-forward="true" selection-start-line="156" selection-start-column="1" selection-end-line="156" selection-end-column="1" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmd/eva/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="105">
+            <caret line="7" column="14" lean-forward="true" selection-start-line="7" selection-start-column="14" selection-end-line="7" selection-end-column="14" />
+          </first_editor>
+          <second_editor />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples/client.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="180">
+          <caret line="25" column="18" lean-forward="true" selection-start-line="25" selection-start-column="18" selection-end-line="25" selection-end-column="18" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="14" column="27" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
+          <folding>
+            <element signature="e#14#283#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmd/eva/go.mod">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmd/eva/main.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="94">
+          <caret line="9" column="13" lean-forward="true" selection-start-line="9" selection-start-column="13" selection-end-line="9" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/cmd/eva/template/conf.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="30">
+          <caret line="2" column="7" lean-forward="true" selection-start-line="2" selection-start-column="7" selection-end-line="2" selection-end-column="7" />
+          <folding>
+            <element signature="e#18#59#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="90">
+            <caret line="6" column="6" lean-forward="true" selection-start-line="6" selection-start-column="6" selection-end-line="6" selection-end-column="6" />
           </first_editor>
           <second_editor />
         </state>
