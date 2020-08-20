@@ -1,6 +1,6 @@
 
 {
-  "name": "eva-example",
+  "name": "evaExample",
   "port": 50002,
   "log": {
     "server": true,

@@ -78,7 +78,7 @@ func Run() {
 	id := utils.GetUUIDStr()
 	etcd.Registry(conf.GetName(), fmt.Sprintf("%s:%d", utils.GetLocalIp(), conf.GetPort()), id)
 	c := make(chan os.Signal)
-	signal.Notify(c, syscall.SIGTERM, syscall.SIGKILL)
+	signal.Notify(c, syscall.SIGTERM, syscall.SIGINT)
 	s := <-c
 	logger.GetLogger().Info(context.TODO(), "signal", logger.Fields{
 		"signal": s.String(),

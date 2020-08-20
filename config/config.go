@@ -124,13 +124,13 @@ func Init() {
 		resp, err := client.Get(context.TODO(), fmt.Sprintf("%s%s", ETCD_CONFIG_PREFIX, "global"))
 		utils.Must(err)
 		if len(resp.Kvs) == 0 {
-			panic("global未找到")
+			panic("配置中心bal未找到")
 		}
 		v.MergeConfig(bytes.NewBuffer(resp.Kvs[0].Value))
 		resp, err = client.Get(context.TODO(), fmt.Sprintf("%s%s", ETCD_CONFIG_PREFIX, config.name))
 		utils.Must(err)
 		if len(resp.Kvs) == 0 {
-			panic(fmt.Sprintf("%s未找到", config.name))
+			panic(fmt.Sprintf("配置中心%s未找到", config.name))
 		}
 		v.MergeConfig(bytes.NewBuffer(resp.Kvs[0].Value))
 

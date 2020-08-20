@@ -23,7 +23,7 @@ type evaLogger struct {
 
 func (m *evaLogger) getFields(ctx context.Context, fields Fields) []zap.Field {
 	fids := make([]zap.Field, 0, len(fields)+3)
-	fids = append(fids, zap.Any("timestamp", utils.FormatTime(time.Now(), "2006-01-01 15:04:05")))
+	fids = append(fids, zap.Any("timestamp", utils.FormatTime(time.Now(), "2006-01-02 15:04:05")))
 	fids = append(fids, zap.Any("traceId", utils.GetTraceId(ctx)))
 	fids = append(fids, zap.Any("appId", m.appId))
 	for k, v := range fields {
