@@ -110,6 +110,9 @@ func Init() {
 		if config.name == "" {
 			panic("配置文件中name不能为空")
 		}
+		if len(config.etcd) == 0 {
+			panic("配置文件中etcd不能为空")
+		}
 		err = v.UnmarshalKey("etcd", &config.etcd)
 		utils.Must(err)
 

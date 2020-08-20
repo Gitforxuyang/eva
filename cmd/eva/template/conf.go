@@ -56,6 +56,7 @@ const (
       "maxConn": 10
     }
   },
+  "etcd": ["localhost:2379"]
 }`
 	dev     string = `{}`
 	test    string = `{}`

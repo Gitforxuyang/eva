@@ -71,7 +71,6 @@ func (m *EvaPlugin) genImportCode(file *generator.FileDescriptor) {
 	m.g.P(`"github.com/Gitforxuyang/eva/wrapper/log"`)
 	m.g.P(`"github.com/Gitforxuyang/eva/wrapper/trace"`)
 	m.g.P(`"google.golang.org/grpc"`)
-	m.g.P(`"google.golang.org/grpc/balancer/roundrobin"`)
 	m.g.P(`"google.golang.org/grpc/keepalive"`)
 	m.g.P(`"time"`)
 	m.g.P(")")
