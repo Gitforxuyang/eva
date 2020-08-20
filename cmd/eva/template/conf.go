@@ -19,7 +19,7 @@ const (
   }
 }`
 	loc string = `{
-"mongo": {
+ "mongo": {
     "node": {
       "url": "mongodb://192.168.3.3:27017/demo",
       "maxPoolSize": 20,
