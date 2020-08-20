@@ -164,8 +164,8 @@ func GetConfig() *EvaConfig {
 	return config
 }
 
-func (m *EvaConfig) RegisterNotify(f ChangeNotify) {
-	m.changeNotifyFuncs = append(m.changeNotifyFuncs, f)
+func RegisterNotify(f ChangeNotify) {
+	config.changeNotifyFuncs = append(config.changeNotifyFuncs, f)
 }
 
 func (m *EvaConfig) changeNotify(config map[string]interface{}) {

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"github.com/Gitforxuyang/eva/examples/conf"
 	"github.com/Gitforxuyang/eva/examples/proto/hello"
 	"github.com/Gitforxuyang/eva/examples/service"
 	mongo2 "github.com/Gitforxuyang/eva/plugin/mongo"
@@ -11,6 +12,7 @@ import (
 
 func main() {
 	server.Init()
+	conf.Registry()
 	rdb := redis.GetRedisClient("node")
 	mongo := mongo2.GetMongoClient("node")
 	server.RegisterGRpcService(func(server *grpc.Server) {

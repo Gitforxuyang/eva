@@ -41,6 +41,7 @@ import (
 
 func main(){
 	server.Init()
+	conf.Registry()
 	server.RegisterGRpcService(func(server *grpc.Server) {
 		{{.Name}}.Register{{.Service}}ServiceServer(server,&handler.HandlerService{})
 	})

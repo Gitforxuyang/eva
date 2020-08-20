@@ -40,6 +40,8 @@ func watch(client *clientv3.Client) {
 						logger.GetLogger().Error(context.TODO(), "动态更新配置出错", logger.Fields{"err": err})
 						goto LOOP
 					}
+					//主动通知动态配置发生变化
+					config.changeNotify(config.dynamic)
 					logger.GetLogger().Info(context.TODO(), "动态更新配置成功", logger.Fields{
 						"dynamic": config.dynamic,
 						"log":     config.log,

@@ -28,7 +28,7 @@ require (
 	github.com/iancoleman/strcase v0.1.0 // indirect
 	github.com/ianlancetaylor/demangle v0.0.0-20200811041817-f3adf8b39d88 // indirect
 	github.com/lyft/protoc-gen-star v0.4.15 // indirect
-	github.com/mitchellh/mapstructure v1.3.3 // indirect
+	github.com/mitchellh/mapstructure v1.3.3
 	github.com/opentracing/opentracing-go v1.1.1-0.20190913142402-a7454ce5950e
 	github.com/pkg/sftp v1.11.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect
