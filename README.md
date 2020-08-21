@@ -25,7 +25,12 @@ go get
 go run main.go 
 即可启动项目
 ```
-
+```
+功能
+1.sentry上报。通过配置sentry地址即可使用sentry上报panic
+2.链路追踪 可通过配置中的trace决定打开哪些组件的链路。使用log决定是否开启更详细的出入参数记录
+3.日志打印 是用logger.getLogger()获得全局日志打印对象进行打印
+```
 待做：
 ```
 1.其它plugin mysql/es/tablestore/broker 
