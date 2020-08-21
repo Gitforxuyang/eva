@@ -12,6 +12,11 @@ var (
 		Message: "未知错误",
 		Status:  codes.Unknown,
 	}
+	PanicError = EvaError{
+		Code:    1002,
+		Message: "异常错误",
+		Status:  codes.Unknown,
+	}
 	HttpError = EvaError{
 		Code:    2001,
 		Message: "http错误",

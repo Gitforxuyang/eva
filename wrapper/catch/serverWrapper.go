@@ -4,6 +4,9 @@ import (
 	"context"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
+	"github.com/opentracing/opentracing-go"
+	log2 "github.com/opentracing/opentracing-go/log"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 	"time"
 )
@@ -13,8 +16,12 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 	return func(ctx context.Context, req interface{}, info *grpc.UnaryServerInfo, handler grpc.UnaryHandler) (resp interface{}, err error) {
 		defer func() {
 			if e := recover(); e != nil {
-				err = error2.Parse("发生异常")
-				log.Panic(ctx, "发生panic", logger.Fields{"e": e})
+				err = error2.PanicError
+				log.Error(ctx, "发生panic", logger.Fields{"e": e})
+				span, ok := ctx.Value("_span").(opentracing.Span)
+				if ok {
+					span.LogFields(log2.Object("stack", zap.Stack("stack")))
+				}
 				//TODO:sentry捕获
 			}
 		}()

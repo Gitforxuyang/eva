@@ -68,8 +68,6 @@ func Init(appId string) error {
 	m = &evaLogger{appId: appId}
 	var err error
 	m.log, err = zap.NewProduction(zap.AddCaller(), zap.AddCallerSkip(1), zap.AddStacktrace(zapcore.WarnLevel))
-	//d := Demo{Name: "123123", A: &Animal{Animal: "dog"}}
-	//m.Info(context.TODO(), "msg", Fields{"d": d, "key": "value"})
 	return err
 }
 func GetLogger() EvaLogger {

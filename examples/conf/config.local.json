@@ -30,7 +30,7 @@
   },
   "grpc": {
     "SayHelloService": {
-      "endpoint": "eva-example",
+      "endpoint": "evaExample",
       "timeout": 5,
       "mode": "etcd"
     }

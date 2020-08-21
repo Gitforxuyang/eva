@@ -22,6 +22,7 @@ type Animal struct {
 
 func (m *HelloServiceServer) Hello(ctx context.Context, req *hello.String) (*hello.String, error) {
 	a := &Animal{String: "str"}
+	panic("panic error")
 	_, err := m.mongo.Database("demo").Collection("demo").InsertOne(ctx, a)
 	if err != nil {
 		return nil, err

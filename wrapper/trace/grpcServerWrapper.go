@@ -19,6 +19,7 @@ func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req in
 		if err != nil {
 			logger.GetLogger().Error(ctx, "链路错误", logger.Fields{"err": utils.StructToMap(err)})
 		}
+		ctx = context.WithValue(ctx, "_span", span)
 		defer span.Finish()
 		resp, err = handler(ctx, req)
 		if conf.Log {
@@ -28,6 +29,9 @@ func NewGRpcServerWrapper(tracer *trace.Tracer) func(ctx context.Context, req in
 			)
 		}
 		if err != nil {
+			//if err == error2.PanicError {
+			//	//span.LogFields(log.Object("stack", zap.Stack("stack")))
+			//}
 			ext.Error.Set(span, true)
 			span.LogFields(log.String("event", "error"))
 			span.LogFields(
