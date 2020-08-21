@@ -6,6 +6,7 @@ import (
 	"github.com/Gitforxuyang/eva/config"
 	"github.com/Gitforxuyang/eva/registory/etcd"
 	"github.com/Gitforxuyang/eva/util/logger"
+	"github.com/Gitforxuyang/eva/util/sentry"
 	trace2 "github.com/Gitforxuyang/eva/util/trace"
 	"github.com/Gitforxuyang/eva/util/utils"
 	"github.com/Gitforxuyang/eva/wrapper/catch"
@@ -42,6 +43,7 @@ func Init() {
 	trace2.Init(fmt.Sprintf("%s_%s", conf.GetName(), conf.GetENV()),
 		conf.GetTraceConfig().Endpoint, conf.GetTraceConfig().Ratio)
 	etcd.Init()
+	sentry.Init()
 	grpcServer = grpc.NewServer(
 		grpc.UnaryInterceptor(grpc_middleware.ChainUnaryServer(
 			trace.NewGRpcServerWrapper(trace2.GetTracer()),

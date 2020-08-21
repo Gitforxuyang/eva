@@ -72,6 +72,7 @@ type EvaConfig struct {
 	trace             *TraceConfig
 	etcd              []string
 	dynamic           map[string]interface{}
+	sentryDSN         string
 }
 
 var (
@@ -156,6 +157,7 @@ func Init() {
 		utils.Must(err)
 		err = v.UnmarshalKey("dynamic", &config.dynamic)
 		utils.Must(err)
+		config.sentryDSN = v.GetString("sentry")
 		watch(client)
 	}
 }
@@ -234,6 +236,9 @@ func (m *EvaConfig) GetEtcd() []string {
 		panic(fmt.Sprintf("etcd配置未找到"))
 	}
 	return m.etcd
+}
+func GetSentry() string {
+	return config.sentryDSN
 }
 
 //func GetDynamic() map[string]interface{} {

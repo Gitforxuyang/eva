@@ -4,6 +4,8 @@ import (
 	"context"
 	error2 "github.com/Gitforxuyang/eva/util/error"
 	"github.com/Gitforxuyang/eva/util/logger"
+	"github.com/getsentry/sentry-go"
+	"github.com/go-errors/errors"
 	"github.com/opentracing/opentracing-go"
 	log2 "github.com/opentracing/opentracing-go/log"
 	"go.uber.org/zap"
@@ -22,7 +24,7 @@ func NewServerWrapper() func(ctx context.Context, req interface{}, info *grpc.Un
 				if ok {
 					span.LogFields(log2.Object("stack", zap.Stack("stack")))
 				}
-				//TODO:sentry捕获
+				sentry.CaptureException(errors.New(e))
 			}
 		}()
 		deadline, _ := ctx.Deadline()

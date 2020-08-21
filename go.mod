@@ -4,17 +4,17 @@ go 1.12
 
 require (
 	cloud.google.com/go/bigquery v1.4.0 // indirect
-	github.com/armon/consul-api v0.0.0-20180202201655-eb2c6b5be1b6 // indirect
 	github.com/benbjohnson/clock v1.0.3 // indirect
 	github.com/census-instrumentation/opencensus-proto v0.3.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.1 // indirect
 	github.com/cncf/udpa/go v0.0.0-20200629203442-efcf912fb354 // indirect
 	github.com/coreos/etcd v3.3.22+incompatible
 	github.com/dgryski/go-rendezvous v0.0.0-20200624174652-8d2f3be8b2d9 // indirect
-	github.com/dustin/go-humanize v1.0.0 // indirect
 	github.com/envoyproxy/go-control-plane v0.9.5 // indirect
 	github.com/envoyproxy/protoc-gen-validate v0.4.0 // indirect
 	github.com/fatih/structs v1.1.0
+	github.com/getsentry/sentry-go v0.7.0
+	github.com/go-errors/errors v1.0.1
 	github.com/go-redis/redis/v8 v8.0.0-beta.5
 	github.com/golang/mock v1.4.4 // indirect
 	github.com/golang/protobuf v1.4.2
@@ -36,7 +36,6 @@ require (
 	github.com/stretchr/testify v1.6.1 // indirect
 	github.com/uber/jaeger-client-go v2.25.0+incompatible
 	github.com/uber/jaeger-lib v2.2.0+incompatible // indirect
-	github.com/xordataexchange/crypt v0.0.2 // indirect
 	github.com/yuin/goldmark v1.2.1 // indirect
 	go.etcd.io/etcd v0.5.0-alpha.5.0.20200306183522-221f0cc107cb // indirect
 	go.mongodb.org/mongo-driver v1.4.0

@@ -6,5 +6,6 @@
     "server": true,
     "grpcClient": true,
     "httpClient": true
-  }
+  },
+  "sentry": "https://e3598bb8792c4e7e881a4f2f8504dac3@o437062.ingest.sentry.io/5399076"
 }

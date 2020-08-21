@@ -31,5 +31,4 @@ go run main.go
 1.其它plugin mysql/es/tablestore/broker 
 2.api server自动注册并发现服务 
 3.单元测试
-4.sentry错误上报
 ```
