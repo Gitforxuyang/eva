@@ -19,4 +19,10 @@ service SayHelloService {
           body: "*"
        };
     };
+    rpc Ping (String) returns (String){
+        option (google.api.http) = {
+          post: "/ping"
+          body: "*"
+       };
+    };
 }

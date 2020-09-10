@@ -1,16 +1,19 @@
 package main
 
 import (
+	"fmt"
 	"github.com/Gitforxuyang/eva/examples/conf"
 	"github.com/Gitforxuyang/eva/examples/proto/hello"
 	"github.com/Gitforxuyang/eva/examples/service"
 	mongo2 "github.com/Gitforxuyang/eva/plugin/mongo"
 	"github.com/Gitforxuyang/eva/plugin/redis"
 	"github.com/Gitforxuyang/eva/server"
+	"github.com/Gitforxuyang/eva/util/utils"
 	"google.golang.org/grpc"
 )
 
 func main() {
+	fmt.Println(utils.StructToJson(hello.GetServerDesc()))
 	server.Init()
 	conf.Registry()
 	rdb := redis.GetRedisClient("node")
@@ -18,7 +21,7 @@ func main() {
 	server.RegisterGRpcService(func(server *grpc.Server) {
 		//reflection.Register(server)
 		hello.RegisterSayHelloServiceServer(server, service.NewHelloServiceServer(rdb, mongo))
-	})
+	},hello.GetServerDesc())
 	//client:=client2.GetGRpcSayHelloServiceClient()
 	server.Run()
 

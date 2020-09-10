@@ -6,6 +6,12 @@ message String {
     string name=1;
     message Data{
     }
+    map<string,string> a=2;
+    int32 i32=3;
+    int64 i64=4;
+    float f32=5;
+    double f64=6;
+
 }
 service SayHelloService {
     rpc Hello (String) returns (String);

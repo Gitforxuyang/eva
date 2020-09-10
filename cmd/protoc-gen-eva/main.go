@@ -34,10 +34,7 @@ func main() {
 
 	g.GenerateAllFiles()
 
-	//g.Fail(*g.Response.File[0].Name)
-	//name:="examples/hello.micro.go"
 	//// Send back the results.
-	//g.Response.GetFile()[0].Name=&name
 	data, err = proto.Marshal(g.Response)
 	if err != nil {
 		g.Error(err, "failed to marshal output proto")

@@ -38,16 +38,12 @@ func SetRatio(ratio float64) {
 func newTracer(serviceName string, addr string, ratio float64) (*Tracer, error) {
 	cfg := config.Configuration{
 		ServiceName: serviceName,
-		//Sampler: &config.SamplerConfig{
-		//	Type:  jaeger.SamplerTypeProbabilistic,
-		//	Param: ratio,
-		//},
 		Reporter: &config.ReporterConfig{
 			LogSpans:            true,
 			BufferFlushInterval: 1 * time.Second,
 		},
 	}
-	sampler, _ := jaeger.NewProbabilisticSampler(1)
+	sampler, _ := jaeger.NewProbabilisticSampler(ratio)
 	sender := transport.NewHTTPTransport(addr)
 	reporter := jaeger.NewRemoteReporter(sender)
 

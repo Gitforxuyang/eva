@@ -37,3 +37,5 @@ go run main.go
 2.api server自动注册并发现服务 
 3.单元测试
 ```
+
+![avatar](./eva架构图.png)

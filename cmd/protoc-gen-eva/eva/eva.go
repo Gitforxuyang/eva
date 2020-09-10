@@ -3,6 +3,7 @@ package eva
 import (
 	"fmt"
 	"github.com/Gitforxuyang/eva/cmd/protoc-gen-eva/generator"
+	"github.com/Gitforxuyang/eva/util/utils"
 	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"strings"
 )
@@ -44,19 +45,27 @@ func (m *EvaPlugin) Generate(files *generator.FileDescriptor) {
 	if len(files.Service) == 0 {
 		return
 	}
+	//if m.mode==MODE_EVA||m.mode==MODE_SERVER{
+	//	m.genMessage(files)
+	//}
 	for _, svc := range files.Service {
 		if m.mode == MODE_EVA {
-			m.genServerCode(svc)
+			m.genServerCode(svc, files)
 			m.genClientCode(svc)
 		}
 		if m.mode == MODE_SERVER {
-			m.genServerCode(svc)
+			m.genServerCode(svc, files)
 		}
 		if m.mode == MODE_CLIENT {
-			m.genServerCode(svc)
+			m.genClientCode(svc)
 		}
 	}
 }
+//func (m *EvaPlugin) genMessage(file *generator.FileDescriptor) {
+//	for _, message := range file.MessageType {
+//		fmt.Println(message.)
+//	}
+//}
 
 func (m *EvaPlugin) genImportCode(file *generator.FileDescriptor) {
 	m.g.P("import (")
@@ -70,30 +79,54 @@ func (m *EvaPlugin) genImportCode(file *generator.FileDescriptor) {
 	m.g.P(`"github.com/Gitforxuyang/eva/wrapper/catch"`)
 	m.g.P(`"github.com/Gitforxuyang/eva/wrapper/log"`)
 	m.g.P(`"github.com/Gitforxuyang/eva/wrapper/trace"`)
+	m.g.P(`"github.com/Gitforxuyang/eva/registory/etcd"`)
 	m.g.P(`"google.golang.org/grpc"`)
 	m.g.P(`"google.golang.org/grpc/keepalive"`)
 	m.g.P(`"time"`)
 	m.g.P(")")
 }
 
-func (m *EvaPlugin) genServerCode(svc *descriptor.ServiceDescriptorProto) {
+func (m *EvaPlugin) genServerCode(svc *descriptor.ServiceDescriptorProto, file *generator.FileDescriptor) {
+	m.g.P("//获取服务的描述信息")
+	m.g.P("func GetServerDesc() *etcd.Service{")
+	m.g.P(fmt.Sprintf("messageMap:=make(map[string]map[string]string,%d)", len(file.MessageType)))
+	for _, message := range file.MessageType {
+		//fmt.Println(message)
+		m.g.P(fmt.Sprintf("message%s:=make(map[string]string)", message.GetName()))
+		for _, field := range message.Field {
+			typeName:=field.GetTypeName()
+			if typeName==""{
+				typeName=field.GetType().String()
+			}
+			m.g.P(fmt.Sprintf(`message%s["%s"]="%s"`, message.GetName(), field.GetName(),typeName))
+		}
+		m.g.P(fmt.Sprintf(`messageMap["%s"]=message%s`,message.GetName(),message.GetName()))
+	}
+	m.g.P("service:=new(etcd.Service)")
+	m.g.P(fmt.Sprintf(`service.Name="%s"`, *svc.Name))
+	m.g.P(fmt.Sprintf(`service.Package="%s"`, utils.StrFirstToLower(svc.GetName())))
+	m.g.P(fmt.Sprintf(`service.AppId="%s"`, utils.StrFirstToLower(svc.GetName())))
+	m.g.P(fmt.Sprintf("service.Methods=make(map[string]etcd.Method,%d)", len(svc.Method)))
+
 	//
 	//m.g.P(fmt.Sprintf("type I%sServer interface {",*svc.Name))
-	//for _,v:=range svc.Method{
-	//	var input string=*v.InputType
-	//	inputArr:=strings.Split(input,".")
-	//	inputArr=inputArr[:copy(inputArr,inputArr[2:])]
-	//
-	//	var output string=*v.OutputType
-	//	outputArr:=strings.Split(output,".")
-	//	outputArr=outputArr[:copy(outputArr,outputArr[2:])]
-	//	m.g.P(fmt.Sprintf("%s(ctx context.Context,req *%s) (resp *%s,err error)",
-	//		*v.Name,
-	//		strings.Join(inputArr,"_"),
-	//		strings.Join(outputArr,"_"),
-	//	))
-	//}
-	//m.g.P(fmt.Sprintf("}"))
+	for _, v := range svc.Method {
+		var input string = *v.InputType
+		inputArr := strings.Split(input, ".")
+		inputArr = inputArr[:copy(inputArr, inputArr[2:])]
+		req := strings.Join(inputArr, "_")
+
+		var output string = *v.OutputType
+		outputArr := strings.Split(output, ".")
+		outputArr = outputArr[:copy(outputArr, outputArr[2:])]
+		res := strings.Join(outputArr, "_")
+		m.g.P(fmt.Sprintf("method%s:=etcd.Method{}", v.GetName()))
+		m.g.P(fmt.Sprintf(`method%s.Req=messageMap["%s"]`, v.GetName(), req))
+		m.g.P(fmt.Sprintf(`method%s.Resp=messageMap["%s"]`, v.GetName(), res))
+		m.g.P(fmt.Sprintf(`service.Methods["%s"]=method%s`, v.GetName(), v.GetName()))
+	}
+	m.g.P("return service")
+	m.g.P("}")
 	//m.g.P("")
 }
 
@@ -147,7 +180,7 @@ func (m *EvaPlugin) genClientCode(svc *descriptor.ServiceDescriptorProto) {
 	m.g.P(fmt.Sprintf(`grpcClientConfig := config.GetConfig().GetGRpc("%s")`, *svc.Name))
 	m.g.P(`conn, err := grpc.Dial(fmt.Sprintf("%s", grpcClientConfig.Endpoint),`)
 	m.g.P("grpc.WithInsecure(),")
-	m.g.P("grpc.WithBlock(),")
+	//m.g.P("grpc.WithBlock(),")
 	//m.g.P("grpc.WithBalancerName(roundrobin.Name),")
 	m.g.P("grpc.WithBalancer(grpc.RoundRobin(selector.NewCustomResolverBuilder(grpcClientConfig.Mode).GetResolver(grpcClientConfig.Endpoint))),")
 	m.g.P("grpc.WithKeepaliveParams(")

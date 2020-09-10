@@ -76,3 +76,23 @@ func GetNoDashUUIDStr() string {
 	str := strings.ReplaceAll(uuid.String(), "-", "")
 	return str
 }
+func StrFirstToUpper(str string) string {
+	if len(str) < 1 {
+		return ""
+	}
+	strArry := []rune(str)
+	if strArry[0] >= 97 && strArry[0] <= 122  {
+		strArry[0] -=  32
+	}
+	return string(strArry)
+}
+func StrFirstToLower(str string) string {
+	if len(str) < 1 {
+		return ""
+	}
+	strArry := []rune(str)
+	if strArry[0] >= 65 && strArry[0] <= 90  {
+		strArry[0] +=  32
+	}
+	return string(strArry)
+}

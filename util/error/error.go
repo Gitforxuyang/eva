@@ -98,12 +98,14 @@ func FromError(err error) *EvaError {
 
 func EncodeStatus(e *EvaError) *status.Status {
 	status := status.New(e.Status, e.Error())
+
 	return status
 }
 
 func DecodeStatus(e error) *EvaError {
 
 	status, ok := status.FromError(e)
+
 	if !ok {
 		return Parse(e.Error())
 	} else {

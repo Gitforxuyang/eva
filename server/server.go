@@ -31,6 +31,7 @@ var (
 	grpcServer   *grpc.Server
 	listen       net.Listener
 	shutdownFunc []RegisterShutdown = make([]RegisterShutdown, 0)
+	svcDesc *etcd.Service
 )
 
 func Init() {
@@ -61,8 +62,9 @@ func Init() {
 
 }
 
-func RegisterGRpcService(registerService RegisterService) {
+func RegisterGRpcService(registerService RegisterService,desc *etcd.Service) {
 	registerService(grpcServer)
+	svcDesc=desc
 }
 
 func Run() {
@@ -78,7 +80,7 @@ func Run() {
 	})
 	conf := config.GetConfig()
 	id := utils.GetUUIDStr()
-	etcd.Registry(conf.GetName(), fmt.Sprintf("%s:%d", utils.GetLocalIp(), conf.GetPort()), id)
+	etcd.Registry(conf.GetName(), fmt.Sprintf("%s:%d", utils.GetLocalIp(), conf.GetPort()), id,svcDesc)
 	c := make(chan os.Signal)
 	signal.Notify(c, syscall.SIGTERM, syscall.SIGINT)
 	s := <-c
