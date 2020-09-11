@@ -4,10 +4,12 @@ import (
 	"context"
 	"fmt"
 	"github.com/Gitforxuyang/eva/registory/etcd"
+	"github.com/Gitforxuyang/eva/util/logger"
 	"github.com/Gitforxuyang/eva/util/utils"
 	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/mvcc/mvccpb"
 	"google.golang.org/grpc/naming"
+	"strings"
 )
 
 //
@@ -60,6 +62,7 @@ type watcher struct {
 	re            *resolver
 	client        *clientv3.Client
 	isInitialized bool
+	idEndpoint map[string]string
 }
 
 // Close do nothing
@@ -75,7 +78,7 @@ func (w *watcher) Next() ([]*naming.Update, error) {
 		resp, err := w.client.Get(context.Background(), prefix, clientv3.WithPrefix())
 		w.isInitialized = true
 		if err == nil {
-			addrs := extractAddrs(resp)
+			addrs := extractAddrs(resp,w.idEndpoint)
 			if l := len(addrs); l != 0 {
 				updates := make([]*naming.Update, l)
 				for i := range addrs {
@@ -89,20 +92,29 @@ func (w *watcher) Next() ([]*naming.Update, error) {
 	rch := w.client.Watch(context.Background(), prefix, clientv3.WithPrefix())
 	for wresp := range rch {
 		for _, ev := range wresp.Events {
-			node := etcd.ServiceNode{}
-			err := utils.JsonToStruct(string(ev.Kv.Value), &node)
-			utils.Must(err)
 			switch ev.Type {
 			case mvccpb.PUT:
+				node := etcd.ServiceNode{}
+				err := utils.JsonToStruct(string(ev.Kv.Value), &node)
+				if err != nil {
+					logger.GetLogger().Error(context.TODO(), "grpc client watch add错误",
+						logger.Fields{"err": err, "value": string(ev.Kv.Value), "key": string(ev.Kv.Key)})
+					continue
+				}
+				w.idEndpoint[node.Id] = node.Endpoint
 				return []*naming.Update{{Op: naming.Add, Addr: node.Endpoint}}, nil
 			case mvccpb.DELETE:
-				return []*naming.Update{{Op: naming.Delete, Addr: node.Endpoint}}, nil
+				id := string(ev.Kv.Key)
+				ids := strings.Split(id, "/")
+				id = ids[len(ids)-1]
+				endpoint := w.idEndpoint[id]
+				return []*naming.Update{{Op: naming.Delete, Addr: endpoint}}, nil
 			}
 		}
 	}
 	return nil, nil
 }
-func extractAddrs(resp *clientv3.GetResponse) []string {
+func extractAddrs(resp *clientv3.GetResponse,idEndpoint map[string]string) []string {
 	addrs := []string{}
 	if resp == nil || resp.Kvs == nil {
 		return addrs
@@ -113,6 +125,7 @@ func extractAddrs(resp *clientv3.GetResponse) []string {
 			err := utils.JsonToStruct(string(v), &node)
 			utils.Must(err)
 			addrs = append(addrs, node.Endpoint)
+			idEndpoint[node.Id]=node.Endpoint
 		}
 	}
 	return addrs
