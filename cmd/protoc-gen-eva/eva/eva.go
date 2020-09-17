@@ -86,18 +86,73 @@ func (m *EvaPlugin) genImportCode(file *generator.FileDescriptor) {
 	m.g.P(")")
 }
 
+var (
+	typeNameMap map[int32]string= map[int32]string{
+		1:  "Double",
+		2:  "Float",
+		3:  "Int64",
+		4:  "UInt64",
+		5:  "Int32",
+		6:  "FIXED64",
+		7:  "FIXED32",
+		8:  "Bool",
+		9:  "String",
+		10: "GROUP",
+		11: "MESSAGE",
+		12: "BYTES",
+		13: "UInt32",
+		14: "ENUM",
+		15: "SFIXED32",
+		16: "SFIXED64",
+		17: "SINT32",
+		18: "SINT64",
+		}
+)
 func (m *EvaPlugin) genServerCode(svc *descriptor.ServiceDescriptorProto, file *generator.FileDescriptor) {
 	m.g.P("//获取服务的描述信息")
 	m.g.P("func GetServerDesc() *etcd.Service{")
 	m.g.P(fmt.Sprintf("messageMap:=make(map[string]map[string]string,%d)", len(file.MessageType)))
 	for _, message := range file.MessageType {
-		//fmt.Println(message)
 		m.g.P(fmt.Sprintf("message%s:=make(map[string]string)", message.GetName()))
 		for _, field := range message.Field {
 			typeName:=field.GetTypeName()
+			//如果typeName不为空则说明不是一个基本类型，则需要继续往下递归
 			if typeName==""{
-				typeName=field.GetType().String()
+				typeName=typeNameMap[int32(field.GetType())]
+				if field.GetLabel()== descriptor.FieldDescriptorProto_LABEL_REPEATED{
+					typeName="[]"+typeName
+				}
+			}else{
+				if *field.Type == descriptor.FieldDescriptorProto_TYPE_MESSAGE {
+					desc := m.g.ObjectNamed(field.GetTypeName())
+					if d, ok := desc.(*generator.Descriptor); ok && d.GetOptions().GetMapEntry() {
+						// Figure out the Go types and tags for the key and value types.
+						keyField, valField := d.Field[0], d.Field[1]
+						keyType, _ := m.g.GoType(d, keyField)
+						valType, _ := m.g.GoType(d, valField)
+
+						// We don't use stars, except for message-typed values.
+						// Message and enum types are the only two possibly foreign types used in maps,
+						// so record their use. They are not permitted as map keys.
+						keyType = strings.TrimPrefix(keyType, "*")
+						switch *valField.Type {
+						case descriptor.FieldDescriptorProto_TYPE_ENUM:
+							valType = strings.TrimPrefix(valType, "*")
+							m.g.RecordTypeUse(valField.GetTypeName())
+						case descriptor.FieldDescriptorProto_TYPE_MESSAGE:
+							m.g.RecordTypeUse(valField.GetTypeName())
+						default:
+							valType = strings.TrimPrefix(valType, "*")
+						}
+						typeName = fmt.Sprintf("map[%s]%s", keyType, valType)
+					}
+				}
 			}
+			//fmt.Println(field.get)
+			//typeName=field.GetOptions().Ctype.String()
+				//fmt.Println(111)
+				//fmt.Println(field.GetExtendee())
+				//fmt.Println(111)
 			m.g.P(fmt.Sprintf(`message%s["%s"]="%s"`, message.GetName(), field.GetName(),typeName))
 		}
 		m.g.P(fmt.Sprintf(`messageMap["%s"]=message%s`,message.GetName(),message.GetName()))

@@ -24,9 +24,8 @@ import (
 func GetServerDesc() *etcd.Service {
 	messageMap := make(map[string]map[string]string, 1)
 	messageString := make(map[string]string)
-	messageString["name"] = "TYPE_STRING"
 	messageString["medalCount"] = ".google.protobuf.Int32Value"
-	messageString["a"] = ".hello.String.AEntry"
+	messageString["a"] = "map[int32]*String_Data"
 	messageMap["String"] = messageString
 	service := new(etcd.Service)
 	service.Name = "SayHelloService"

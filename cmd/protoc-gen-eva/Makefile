@@ -1,7 +1,7 @@
 
 
 proto:
-	./examples/*.eva.go | true
+	./examples/*.eva.go || true
 	protoc -I=./examples/googleapis   -I=./examples --eva_out=plugins=all:./examples hello.proto
 
 
