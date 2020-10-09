@@ -69,6 +69,10 @@ func main() {
 	template.Conf(d)
 	template.Proto(d)
 	template.Handler(d)
+	fmt.Println("git init")
+	fmt.Println("git add .")
+	fmt.Println("git commit -m \"init\"")
+	fmt.Println("git subtree add --prefix=infra/common https://github.com/Gitforxuyang/evaCommon.git master --squash")
 
 }
 

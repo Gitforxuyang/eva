@@ -12,6 +12,7 @@ const (
   "name": "{{.Name}}",
   "port": {{.Port}},
   "version": "0.0.1",
+  "desc": "desc",
   "log": {
     "server": true,
     "grpcClient": true,
