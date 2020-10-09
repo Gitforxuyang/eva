@@ -1,0 +1,11 @@
+
+{
+  "name": "example",
+  "port": 8080,
+  "version": "0.0.1",
+  "log": {
+    "server": true,
+    "grpcClient": true,
+    "httpClient": true
+  }
+}
