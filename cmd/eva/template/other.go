@@ -153,6 +153,7 @@ type Data struct {
 	Name    string
 	Port    int
 	Service string
+	AppId   string
 }
 
 func GoMod(d Data) {
@@ -207,4 +208,17 @@ func Lcfirst(str string) string {
 		return string(unicode.ToLower(v)) + str[i+1:]
 	}
 	return ""
+}
+
+func SplitName(name string) string {
+	str := ""
+	for _, v := range name {
+		if v > 90 {
+			str += string(v)
+		} else {
+			str += "-"
+			str += string(v + 32)
+		}
+	}
+	return str
 }

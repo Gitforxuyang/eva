@@ -60,7 +60,7 @@ func main() {
 	os.MkdirAll(path.Join(*name, "infra", "repo"), 0777)
 	os.MkdirAll(path.Join(*name, "infra", "util"), 0777)
 	os.MkdirAll(path.Join(*name, "proto"), 0777)
-	d := template.Data{Name: *name, Port: *port, Service: template.Ucfirst(*name)}
+	d := template.Data{Name: *name, Port: *port, Service: template.Ucfirst(*name),AppId:template.SplitName(*name)}
 	template.Makefile(d)
 	template.GoMod(d)
 	template.Git(d)
@@ -69,6 +69,7 @@ func main() {
 	template.Conf(d)
 	template.Proto(d)
 	template.Handler(d)
+	fmt.Println("服务创建完成，请依次执行如下命令")
 	fmt.Println("git init")
 	fmt.Println("git add .")
 	fmt.Println("git commit -m \"init\"")
