@@ -6,3 +6,9 @@
 
 
 使用：eva -name=xxx -port=xxx 
+
+
+
+ 添加subtree
+ git subtree add --prefix=infra/common https://github.com/Gitforxuyang/evaCommon.git master --squash
+ 

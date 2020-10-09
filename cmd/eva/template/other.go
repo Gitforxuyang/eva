@@ -9,19 +9,7 @@ import (
 
 const (
 	makefile string = `
-proto:
-	mkdir ./proto/{{.Name}} || true
-	protoc --eva_out=plugins=all:./proto/{{.Name}} -I=./proto {{.Name}}.proto
-	protoc --go_out=plugins=grpc:./proto/{{.Name}} -I=./proto {{.Name}}.proto
-
-.PHONY: proto
-
-build:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o {{.Name}} main.go
-
-docker:
-	CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o {{.Name}} main.go
-	docker build -t eva-demo:v1 .
+include ./infra/common/Makefile
 `
 	gomod string = `
 module {{.Name}}
@@ -150,28 +138,6 @@ flycheck_*.el
 bin/*
 
 `
-	dockerfile string=`
-FROM alpine:3.10
-
-RUN apk --update add tzdata \
-	&& cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
-	&& echo "Asia/Shanghai" > /etc/timezone \
-	&& apk del tzdata
-
-RUN mkdir -p /app
-# 以上部分可以弄成一个通用基础镜像
-
-WORKDIR /app
-
-##暴露端口
-EXPOSE {{.Port}}
-
-COPY conf/config.*.json /app/conf/
-COPY {{.Name}} /app/{{.Name}}
-
-#最终运行docker的命令
-ENTRYPOINT  ["./{{.Name}}"]
-`
 )
 
 func Makefile(d Data) {
@@ -215,14 +181,14 @@ func Git(d Data) {
 	CheckErr(err)
 }
 
-func Dockerfile(d Data) {
-	f, err := os.Create(path.Join(d.Name, "Dockerfile"))
-	CheckErr(err)
-	tmp, err := template.New("test").Parse(dockerfile)
-	CheckErr(err)
-	err = tmp.Execute(f, d)
-	CheckErr(err)
-}
+//func Dockerfile(d Data) {
+//	f, err := os.Create(path.Join(d.Name,"infra/common", "Dockerfile"))
+//	CheckErr(err)
+//	tmp, err := template.New("test").Parse(dockerfile)
+//	CheckErr(err)
+//	err = tmp.Execute(f, d)
+//	CheckErr(err)
+//}
 
 func CheckErr(err error) {
 	if err != nil {

@@ -65,7 +65,7 @@ func main() {
 	template.GoMod(d)
 	template.Git(d)
 	template.Main(d)
-	template.Dockerfile(d)
+	//template.Dockerfile(d)
 	template.Conf(d)
 	template.Proto(d)
 	template.Handler(d)
