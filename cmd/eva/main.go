@@ -70,6 +70,7 @@ func main() {
 	template.Proto(d)
 	template.Handler(d)
 	fmt.Println("服务创建完成，请依次执行如下命令")
+	fmt.Println("cd "+*name)
 	fmt.Println("git init")
 	fmt.Println("git add .")
 	fmt.Println("git commit -m \"init\"")

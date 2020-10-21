@@ -41,7 +41,7 @@ func main(){
 	server.Init()
 	conf.Registry()
 	server.RegisterGRpcService(func(server *grpc.Server) {
-		{{.Name}}.Register{{.Service}}Server(server,&handler.HandlerService{})
+		{{.Name}}.Register{{.Service}}Server(server,handler.NewHandlerService())
 	},{{.Name}}.GetServerDesc())
 	server.Run()
 }

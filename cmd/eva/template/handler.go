@@ -16,11 +16,16 @@ import (
 	"{{.Name}}/proto/{{.Name}}"
 )
 
-type HandlerService struct {
+type handlerService struct {
 
 }
 
-func (m *HandlerService) Ping(context.Context, *{{.Name}}.Nil) (*{{.Name}}.Nil, error) {
+func NewHandlerService() {{.Name}}.{{.Service}}Server{
+	return &handlerService{}
+}
+
+
+func (m *handlerService) Ping(context.Context, *{{.Name}}.Nil) (*{{.Name}}.Nil, error) {
 	return &{{.Name}}.Nil{}, nil
 }
 
